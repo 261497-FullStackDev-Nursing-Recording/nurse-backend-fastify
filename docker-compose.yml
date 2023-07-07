@@ -1,0 +1,25 @@
+version: '3.8' # optional since v1.27.0
+name: nurse-backend
+services:
+  mysql:
+    container_name: nurse_db
+    image: mysql:8.0.30-debian
+    restart: always
+    ports:
+      - ${DATABASE_PORT}:3306
+    volumes:
+      - nurse_vol:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+    networks:
+      - nurse_net
+volumes:
+  nurse_vol:
+    external: false
+networks:
+  nurse_net:
+    driver: bridge
+    external: false
