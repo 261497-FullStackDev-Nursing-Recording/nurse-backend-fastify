@@ -54,32 +54,33 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             const { username, password } = request.body as any;
 
             // Look up database
-            const usersData = [
-                { username: 'admin', password: 'admin', role: 'ADMIN' },
-                { username: 'user', password: 'user', role: 'USER' },
-            ];
+
+            const user = await fastify.prisma.user.findUnique({
+                where: { username: username },
+            });
+
+            if (!user) {
+                reply.code(401).send({ message: 'No username found' });
+                return; //Typescript will complain if you don't return here
+            }
 
             // Verify user
-            const user = usersData.find(
-                (u) => u.username === username && u.password === password,
-            );
+            const valid = await fastify.bcrypt.compare(password, user.password);
 
-            if (user) {
-                const { password, ...userWithoutPassword } = user;
-                const accessToken = fastify.jwt.sign(userWithoutPassword, {
-                    expiresIn: '30s',
+            if (!valid) {
+                reply.code(401).send({
+                    message: 'Incorrect username / password combination.',
                 });
-                const refreshToken = fastify.jwt.sign(userWithoutPassword, {
-                    expiresIn: '5m',
-                });
-                reply.send({
-                    accessToken: accessToken,
-                    refreshToken: refreshToken,
-                    user: userWithoutPassword,
-                });
-            } else {
-                reply.code(401).send({ message: 'Unauthorized' });
+                return;
             }
+
+            const accessToken = fastify.jwt.sign(user, {
+                expiresIn: '30s',
+            });
+            const refreshToken = fastify.jwt.sign(user, {
+                expiresIn: '5m',
+            });
+            reply.send({ accessToken, refreshToken, user });
         },
     });
 
