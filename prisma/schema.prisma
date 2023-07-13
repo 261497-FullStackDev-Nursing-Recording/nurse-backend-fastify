@@ -10,10 +10,78 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  NURSE_ADMIN
+  NURSE
+  USER
+}
+
+enum Shift {
+  MORNING
+  EVENING
+  NIGHT
+}
+
 model User {
-  id        String   @id @default(uuid())
-  username  String   @unique
-  password  String
-  role      String   @default("USER")
-  createdAt DateTime @default(now())
+  id              String          @id @default(uuid())
+  f_name          String
+  l_name          String
+  username        String          @unique
+  password        String
+  role            String          @default("NURSE")
+  created_at      DateTime        @default(now())
+  // updatedAt DateTime @updatedAt
+  user_on_patient UserOnPatient[]
+  records         Record[]
+}
+
+enum Status {
+  STATUS_1
+  STATUS_2
+  STATUS_3
+  STATUS_4
+}
+
+model Patient {
+  id              String          @id @default(uuid())
+  f_name          String
+  l_name          String
+  hn              String
+  status          Status
+  user_on_patient UserOnPatient[]
+  records         Record[]
+}
+
+model UserOnPatient {
+  user       User    @relation(fields: [user_id], references: [id])
+  user_id    String
+  patient    Patient @relation(fields: [patient_id], references: [id])
+  patient_id String
+
+  @@id([user_id, patient_id])
+}
+
+model Record {
+  id           String    @id @default(uuid())
+  created_by   User      @relation(fields: [user_id], references: [id])
+  user_id      String
+  patient      Patient?  @relation(fields: [patient_id], references: [id])
+  patient_id   String?
+  bed_number   Int
+  ward         String
+  diagnose     String
+  shift        Shift
+  created_at   DateTime  @default(now())
+  modified_at  DateTime  @updatedAt
+  visit_number String
+  a_field      A_Field[]
+}
+
+model A_Field {
+  id        String  @id @default(uuid())
+  record    Record? @relation(fields: [record_id], references: [id])
+  record_id String?
+  message   String
 }
