@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client';
+import { fastify } from 'fastify';
+import fastifyBcrypt from 'fastify-bcrypt';
 
 const prisma = new PrismaClient();
 
@@ -9,33 +11,47 @@ async function main() {
     //         l_name: 'Admin',
     //         username: 'admin',
     //         password: 'password',
+
     //         role: 'ADMIN',
     //     },
     // });
+    const app = fastify();
+    app.register(fastifyBcrypt);
+    await app.ready();
+
+    // const hash = await app.bcrypt.hash('test');
+    // console.log('test' + hash.toString());
 
     const users = await prisma.user.createMany({
         data: [
-            {
-                f_name: 'User1',
-                l_name: 'User1',
-                username: 'user1',
-                password: 'password',
-                role: 'NURSE',
-            },
-            {
-                f_name: 'User2',
-                l_name: 'User2',
-                username: 'user2',
-                password: 'password',
-                role: 'NURSE',
-            },
+            // {
+            //     f_name: 'User1',
+            //     l_name: 'User1',
+            //     username: 'user1',
+            //     password: 'password',
+            //     role: 'NURSE',
+            // },
+            // {
+            //     f_name: 'User2',
+            //     l_name: 'User2',
+            //     username: 'user2',
+            //     password: 'password',
+            //     role: 'NURSE',
+            // },
             {
                 f_name: 'User3',
                 l_name: 'User3',
                 username: 'user3',
-                password: 'password',
+                password: (await app.bcrypt.hash('password')).toString(),
                 role: 'NURSE',
             },
+            // {
+            //     f_name: 'Admin1',
+            //     l_name: 'Admin1',
+            //     username: 'admin1',
+            //     password: 'password',
+            //     role: 'ADMIN',
+            // },
         ],
     });
 
