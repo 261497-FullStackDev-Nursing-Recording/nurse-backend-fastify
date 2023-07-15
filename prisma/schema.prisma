@@ -76,42 +76,38 @@ model Record {
   created_at   DateTime  @default(now())
   modified_at  DateTime  @updatedAt
   visit_number String
+  s_field      S_Field[]
   a_field      A_Field[]
   e_field      E_Field[]
-  i_field      I_Field[]
   o_field      O_Field[]
-  s_field      S_Field[]
+  i_field      I_Field[]
 }
 
+model S_Field {
+  id        String  @id @default(uuid())
+  record    Record? @relation(fields: [record_id], references: [id])
+  record_id String?
+  message   String
+}
 model A_Field {
   id        String  @id @default(uuid())
   record    Record? @relation(fields: [record_id], references: [id])
   record_id String?
   message   String
 }
-
 model E_Field {
   id        String  @id @default(uuid())
   record    Record? @relation(fields: [record_id], references: [id])
   record_id String?
   message   String
 }
-
-model I_Field {
-  id        String  @id @default(uuid())
-  record    Record? @relation(fields: [record_id], references: [id])
-  record_id String?
-  message   String
-}
-
 model O_Field {
   id        String  @id @default(uuid())
   record    Record? @relation(fields: [record_id], references: [id])
   record_id String?
   message   String
 }
-
-model S_Field {
+model I_Field {
   id        String  @id @default(uuid())
   record    Record? @relation(fields: [record_id], references: [id])
   record_id String?
