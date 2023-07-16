@@ -11,11 +11,15 @@ const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                 await fastify.prisma.user.createMany({
                     data: [
                         {
+                            f_name: 'test',
+                            l_name: 'test',
                             username: 'admin',
                             password: await fastify.bcrypt.hash('admin'),
                             role: 'ADMIN',
                         },
                         {
+                            f_name: 'test',
+                            l_name: 'test',
                             username: 'user',
                             password: await fastify.bcrypt.hash('user'),
                             role: 'USER',

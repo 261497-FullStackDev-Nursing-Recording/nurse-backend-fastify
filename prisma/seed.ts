@@ -18,10 +18,12 @@ async function main() {
     //         role: 'NURSE',
     //     },
     // });
-    const records = await prisma.record.createMany({
+
+    const _ = await prisma.record.createMany({
         data: [
             {
-                user_id: '44cb4235-a670-4260-a6f3-f57c7b453e6d',
+                user_id: 'a00178d4-ceed-4846-88c2-0139bb268723',
+                patient_id: '37973c7f-44f2-435a-b4b3-525df1e9580b',
                 bed_number: 1,
                 ward: 'ward',
                 diagnose: 'diagnose',
@@ -29,7 +31,8 @@ async function main() {
                 visit_number: 'visit_number',
             },
             {
-                user_id: '44cb4235-a670-4260-a6f3-f57c7b453e6d',
+                user_id: 'a00178d4-ceed-4846-88c2-0139bb268723',
+                patient_id: '37973c7f-44f2-435a-b4b3-525df1e9580b',
                 bed_number: 2,
                 ward: 'ward',
                 diagnose: 'diagnose',
@@ -39,7 +42,15 @@ async function main() {
         ],
     });
 
-    //     console.log('Records created:', records);
+    // const patient = await prisma.patient.create({
+    //     data: {
+    //         f_name: 'f_nurse',
+    //         l_name: 'l_nurse',
+    //         hn: 'hn',
+    //         status: 'STATUS_1',
+    //     },
+    // });
+    console.log('records created:', _);
 }
 
 main()
