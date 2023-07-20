@@ -52,7 +52,9 @@ const GetRecordsInformationResDTO = Type.Array(
         ),
     }),
 );
-
+interface IDENTIFICATION_ID {
+    indentification_id: string;
+}
 const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     // fastify.addHook('onRequest', async (request, reply) => {
     //     try {
@@ -66,13 +68,22 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'GET',
         url: '/',
         schema: {
+            querystring: {
+                indentification_id: { type: 'string' },
+            },
             response: {
                 200: GetRecordsResDTO,
             },
         },
         handler: async (request, reply) => {
             try {
-                const records = await fastify.prisma.record.findMany();
+                const { indentification_id } =
+                    request.query as IDENTIFICATION_ID;
+                const records = await fastify.prisma.record.findMany({
+                    where: {
+                        patient_id: indentification_id,
+                    },
+                });
                 return records;
             } catch (err) {
                 reply.code(500).send(err);
@@ -83,13 +94,22 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'GET',
         url: '/info',
         schema: {
+            querystring: {
+                indentification_id: { type: 'string' },
+            },
             response: {
                 200: GetRecordsInformationResDTO,
             },
         },
         handler: async (request, reply) => {
             try {
+                const { indentification_id } =
+                    request.query as IDENTIFICATION_ID;
+
                 const records = await fastify.prisma.record.findMany({
+                    where: {
+                        patient_id: indentification_id,
+                    },
                     include: {
                         a_field: true,
                         e_field: true,
@@ -98,6 +118,7 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                         s_field: true,
                     },
                 });
+
                 return records;
             } catch (err) {
                 reply.code(500).send(err);
