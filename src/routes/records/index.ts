@@ -1,6 +1,7 @@
-import { Type } from '@sinclair/typebox';
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
+<<<<<<< Updated upstream
 const GetRecordsResDTO = Type.Array(
     Type.Object({
         user_id: Type.String(),
@@ -55,7 +56,14 @@ const GetRecordsInformationResDTO = Type.Array(
 interface IDENTIFICATION_ID {
     indentification_id: string;
 }
+=======
+import { getRecords, searchRecords } from './services';
+import { GetRecordsRes, SearchRecordReq } from './types';
+
+>>>>>>> Stashed changes
 const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+    const server = fastify.withTypeProvider<TypeBoxTypeProvider>();
+
     // fastify.addHook('onRequest', async (request, reply) => {
     //     try {
     //         await request.jwtVerify();
@@ -64,7 +72,7 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     //     }
     // });
 
-    fastify.route({
+    server.route({
         method: 'GET',
         url: '/',
         schema: {
@@ -72,10 +80,11 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                 indentification_id: { type: 'string' },
             },
             response: {
-                200: GetRecordsResDTO,
+                200: GetRecordsRes,
             },
         },
         handler: async (request, reply) => {
+<<<<<<< Updated upstream
             try {
                 const { indentification_id } =
                     request.query as IDENTIFICATION_ID;
@@ -123,6 +132,22 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             } catch (err) {
                 reply.code(500).send(err);
             }
+=======
+            const records = await getRecords(server);
+            return records;
+        },
+    });
+
+    server.route({
+        method: 'POST',
+        url: '/search',
+        schema: {
+            body: SearchRecordReq,
+        },
+        handler: async (request, reply) => {
+            const records = await searchRecords(server, request.body);
+            return records;
+>>>>>>> Stashed changes
         },
     });
 };

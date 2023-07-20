@@ -30,7 +30,7 @@ model User {
   l_name          String
   username        String          @unique
   password        String
-  role            String          @default("NURSE")
+  role            Role            @default(USER)
   created_at      DateTime        @default(now())
   // updatedAt DateTime @updatedAt
   user_on_patient UserOnPatient[]
@@ -96,19 +96,22 @@ model E_Field {
   record_id String?
   message   String
 }
-model I_Field{
+
+model I_Field {
   id        String  @id @default(uuid())
   record    Record? @relation(fields: [record_id], references: [id])
   record_id String?
   message   String
 }
-model O_Field{
+
+model O_Field {
   id        String  @id @default(uuid())
   record    Record? @relation(fields: [record_id], references: [id])
   record_id String?
   message   String
 }
-model S_Field{
+
+model S_Field {
   id        String  @id @default(uuid())
   record    Record? @relation(fields: [record_id], references: [id])
   record_id String?
