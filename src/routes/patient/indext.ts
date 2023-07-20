@@ -1,5 +1,5 @@
 import { Type } from '@sinclair/typebox';
-import { FastifyPluginAsync } from 'fastify';
+import { FastifyPluginAsync, RouteHandlerMethod } from 'fastify';
 
 const GETPatients = Type.Array(
     Type.Object({
@@ -48,33 +48,53 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
      *  localhost5001/patient/get_hn/{hn}
      *  by {hn} is the parameter that you want to search
      */
-    interface HN {
+
+    interface HNParams {
         hn: string;
     }
+
+    interface SearchName {
+        f_name?: string;
+        l_name?: string;
+    }
+
+    const getHNHandler: RouteHandlerMethod = async (req, res) => {
+        const { hn } = req.params as HNParams;
+        const { f_name, l_name } = req.query as SearchName;
+
+        try {
+            const patients = await fastify.prisma.patient.findMany({
+                where: {
+                    OR: [{ hn }, { f_name }, { l_name }],
+                },
+            });
+
+            return patients;
+        } catch (err) {
+            res.send(err);
+        }
+    };
+
     fastify.route({
         method: 'GET',
-        url: '/get_hn/:hn',
+        url: '/search/:hn',
         schema: {
+            params: {
+                type: 'object',
+                properties: {
+                    hn: { type: 'string' },
+                },
+            },
             querystring: {
-                hn: { type: 'string' },
+                type: 'object',
+                properties: {
+                    f_name: { type: 'string' },
+                    l_name: { type: 'string' },
+                },
             },
         },
         preHandler: fastify.auth([fastify.verifyJWT]),
-
-        handler: async (req, res) => {
-            const { hn } = req.params as HN;
-            console.log('???' + hn);
-            try {
-                const patiens = await fastify.prisma.patient.findMany({
-                    where: {
-                        hn: hn,
-                    },
-                });
-                return patiens;
-            } catch (err) {
-                res.send(err);
-            }
-        },
+        handler: getHNHandler,
     });
 };
 
