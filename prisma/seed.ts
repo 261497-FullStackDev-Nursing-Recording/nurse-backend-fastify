@@ -5,58 +5,59 @@ import fastifyBcrypt from 'fastify-bcrypt';
 const prisma = new PrismaClient();
 
 async function main() {
-    // const admin = await prisma.user.create({
-    //     data: {
-    //         f_name: 'Admin',
-    //         l_name: 'Admin',
-    //         username: 'admin',
-    //         password: 'password',
-
-    //         role: 'ADMIN',
-    //     },
-    // });
     const app = fastify();
     app.register(fastifyBcrypt);
     await app.ready();
 
-    // const hash = await app.bcrypt.hash('test');
-    // console.log('test' + hash.toString());
-
-    const users = await prisma.user.createMany({
+    /**
+     * create a patients in the database if you don't need it just comment it
+     */
+    const patients = await prisma.patient.createMany({
         data: [
-            // {
-            //     f_name: 'User1',
-            //     l_name: 'User1',
-            //     username: 'user1',
-            //     password: 'password',
-            //     role: 'NURSE',
-            // },
-            // {
-            //     f_name: 'User2',
-            //     l_name: 'User2',
-            //     username: 'user2',
-            //     password: 'password',
-            //     role: 'NURSE',
-            // },
             {
-                f_name: 'User3',
-                l_name: 'User3',
-                username: 'user3',
-                password: (await app.bcrypt.hash('password')).toString(),
-                role: 'NURSE',
+                f_name: 'Patients',
+                l_name: 'Bed1',
+                hn: '001',
+                status: 'STATUS_1',
             },
-            // {
-            //     f_name: 'Admin1',
-            //     l_name: 'Admin1',
-            //     username: 'admin1',
-            //     password: 'password',
-            //     role: 'ADMIN',
-            // },
+            {
+                f_name: 'Patients',
+                l_name: 'Bed2',
+                hn: '002',
+                status: 'STATUS_2',
+            },
+            {
+                f_name: 'Patients',
+                l_name: 'Bed3',
+                hn: '003',
+                status: 'STATUS_3',
+            },
         ],
     });
 
-    // console.log('Admin created:', admin);
-    console.log('Users created:', users);
+    // const records = await prisma.record.createMany({
+    //     data: [
+    //         {
+    //             user_id: 'a00178d4-ceed-4846-88c2-0139bb268723',
+    //             patient_id: '37973c7f-44f2-435a-b4b3-525df1e9580b',
+    //             bed_number: 1,
+    //             ward: 'ward',
+    //             diagnose: 'diagnose',
+    //             shift: 'EVENING',
+    //             visit_number: 'visit_number',
+    //         },
+    //         {
+    //             user_id: 'a00178d4-ceed-4846-88c2-0139bb268723',
+    //             patient_id: '37973c7f-44f2-435a-b4b3-525df1e9580b',
+    //             bed_number: 2,
+    //             ward: 'ward',
+    //             diagnose: 'diagnose',
+    //             shift: 'EVENING',
+    //             visit_number: 'visit_number',
+    //         },
+    //     ],
+    // });
+    console.log('create' + patients);
 }
 
 main()
