@@ -1,6 +1,11 @@
 import { Shift } from '@prisma/client';
 import { Static, Type } from '@sinclair/typebox';
 
+const Field = Type.Object({
+    id: Type.String(),
+    message: Type.String(),
+});
+
 const Record = Type.Object({
     id: Type.String(),
     user_id: Type.String(),
@@ -12,6 +17,11 @@ const Record = Type.Object({
     visit_number: Type.String(),
     created_at: Type.String(),
     modified_at: Type.String(),
+    a_field: Type.Array(Field),
+    e_field: Type.Array(Field),
+    i_field: Type.Array(Field),
+    o_field: Type.Array(Field),
+    s_field: Type.Array(Field),
 });
 
 // Default Response
@@ -21,6 +31,8 @@ export type GetRecordsRes = Static<typeof GetRecordsRes>; // For typescript defi
 // Search API
 export const SearchRecordReq = Type.Object({
     ...Type.Pick(Type.Partial(Record), [
+        'id',
+        'patient_id',
         'bed_number',
         'ward',
         'diagnose',
@@ -29,5 +41,6 @@ export const SearchRecordReq = Type.Object({
     ]).properties,
     fromDate: Type.Optional(Type.String()),
     toDate: Type.Optional(Type.String()),
+    includeFields: Type.Optional(Type.Boolean()),
 });
 export type SearchRecordReq = Static<typeof SearchRecordReq>;

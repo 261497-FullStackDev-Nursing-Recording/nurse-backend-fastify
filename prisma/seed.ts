@@ -10,6 +10,11 @@ async function main() {
     app.register(fastifyBcrypt);
     await app.ready();
 
+    await prisma.a_Field.deleteMany({});
+    await prisma.e_Field.deleteMany({});
+    await prisma.i_Field.deleteMany({});
+    await prisma.o_Field.deleteMany({});
+    await prisma.s_Field.deleteMany({});
     await prisma.userOnPatient.deleteMany({});
     await prisma.record.deleteMany({});
     await prisma.user.deleteMany({});
@@ -104,7 +109,7 @@ async function main() {
     }
 
     // Create records
-    const records = [...Array(10).keys()].map((idx) => ({
+    const recordsData = [...Array(10).keys()].map((idx) => ({
         user_id: getRandomElement<User>(nurses).id,
         patient_id: getRandomElement<Patient>(patients).id,
         bed_number: idx,
@@ -112,25 +117,49 @@ async function main() {
         diagnose: 'diagnose',
         shift: Shift.EVENING,
         visit_number: 'visit_number',
-        a_field: {
-            create: [{ message: 'a_field1' }, { message: 'a_field2' }],
-        },
-        e_field: {
-            create: [{ message: 'e_field1' }, { message: 'e_field2' }],
-        },
-        i_field: {
-            create: [{ message: 'i_field1' }, { message: 'i_field2' }],
-        },
-        o_field: {
-            create: [{ message: 'o_field1' }, { message: 'o_field2' }],
-        },
-        s_field: {
-            create: [{ message: 's_field1' }, { message: 's_field2' }],
-        },
     }));
 
     await prisma.record.createMany({
-        data: records,
+        data: recordsData,
+    });
+
+    // Create nurse notes
+    const records = await prisma.record.findMany({});
+    records.forEach(async (record) => {
+        await prisma.a_Field.createMany({
+            data: [
+                { record_id: record.id, message: 'a_field1' },
+                { record_id: record.id, message: 'a_field2' },
+            ],
+        });
+
+        await prisma.e_Field.createMany({
+            data: [
+                { record_id: record.id, message: 'e_field1' },
+                { record_id: record.id, message: 'e_field2' },
+            ],
+        });
+
+        await prisma.i_Field.createMany({
+            data: [
+                { record_id: record.id, message: 'i_field1' },
+                { record_id: record.id, message: 'i_field2' },
+            ],
+        });
+
+        await prisma.o_Field.createMany({
+            data: [
+                { record_id: record.id, message: 'o_field1' },
+                { record_id: record.id, message: 'o_field2' },
+            ],
+        });
+
+        await prisma.s_Field.createMany({
+            data: [
+                { record_id: record.id, message: 's_field1' },
+                { record_id: record.id, message: 's_field2' },
+            ],
+        });
     });
 
     // const a_field = await prisma.a_Field.createMany({
