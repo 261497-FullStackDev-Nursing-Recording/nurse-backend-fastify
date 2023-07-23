@@ -47,10 +47,12 @@ export const SearchRecordReq = Type.Object({
 export type SearchRecordReq = Static<typeof SearchRecordReq>;
 
 export const UpdateRecordReq = Type.Object({
-    bed_number: Type.Integer(),
-    ward: Type.String(),
-    diagnose: Type.String(),
-    shift: Type.Enum(Shift),
-    visit_number: Type.String(),
+    ...Type.Pick(Type.Partial(Record), [
+        'bed_number',
+        'ward',
+        'diagnose',
+        'shift',
+        'visit_number',
+    ]).properties,
 });
 export type UpdateRecordReq = Static<typeof UpdateRecordReq>;

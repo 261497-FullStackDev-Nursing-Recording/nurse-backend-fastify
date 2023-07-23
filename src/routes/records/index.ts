@@ -18,7 +18,6 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     //     }
     // });
 
-    // If you want to enforce schema, you need to use server.route instead of fastify.route.
     server.route({
         method: 'POST',
         url: '/search',
