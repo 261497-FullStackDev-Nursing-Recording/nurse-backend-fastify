@@ -24,11 +24,12 @@ const Record = Type.Object({
     s_field: Type.Array(Field),
 });
 
-// Default Response
-export const GetRecordsRes = Type.Array(Type.Partial(Record)); // For API schema
-export type GetRecordsRes = Static<typeof GetRecordsRes>; // For typescript definition
+export const GetRecordsRes = Type.Array(Type.Partial(Record));
+export type GetRecordsRes = Static<typeof GetRecordsRes>;
 
-// Search API
+export const UpdateRecordRes = null;
+export type UpdateRecordRes = null;
+
 export const SearchRecordReq = Type.Object({
     ...Type.Pick(Type.Partial(Record), [
         'id',
@@ -44,3 +45,14 @@ export const SearchRecordReq = Type.Object({
     includeFields: Type.Optional(Type.Boolean()),
 });
 export type SearchRecordReq = Static<typeof SearchRecordReq>;
+
+export const UpdateRecordReq = Type.Object({
+    ...Type.Pick(Type.Partial(Record), [
+        'bed_number',
+        'ward',
+        'diagnose',
+        'shift',
+        'visit_number',
+    ]).properties,
+});
+export type UpdateRecordReq = Static<typeof UpdateRecordReq>;

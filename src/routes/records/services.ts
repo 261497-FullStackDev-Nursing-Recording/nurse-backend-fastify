@@ -1,13 +1,12 @@
 import { FastifyInstance } from 'fastify';
 
-import { type GetRecordsRes, type SearchRecordReq } from './types';
+import {
+    type GetRecordsRes,
+    type SearchRecordReq,
+    type UpdateRecordReq,
+    type UpdateRecordRes,
+} from './types';
 
-// export async function getRecords(fastify: FastifyInstance) {
-//     const records = await fastify.prisma.record.findMany();
-//     return records as unknown as GetRecordsRes; // I will see if there is a better way to do this. Right now if I don't do this typescript will keep complaining.
-// }
-
-// Search API that can handle different parameters
 export async function searchRecords(
     fastify: FastifyInstance,
     body: SearchRecordReq,
@@ -39,4 +38,20 @@ export async function searchRecords(
 function isDate(dateStr: string | undefined) {
     if (!dateStr) return false;
     return !isNaN(new Date(dateStr).getDate());
+}
+
+export async function updateRecord(
+    fastify: FastifyInstance,
+    body: UpdateRecordReq,
+    id: string,
+) {
+    const records = await fastify.prisma.record.update({
+        where: {
+            id: id,
+        },
+        data: {
+            ...body,
+        },
+    });
+    return records as unknown as UpdateRecordRes; // I will see if there is a better way to do this. Right now if I don't do this typescript will keep complaining.
 }

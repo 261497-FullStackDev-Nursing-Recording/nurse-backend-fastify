@@ -1,8 +1,19 @@
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
-import { updateAField } from './service';
-import { UpdateFieldReq } from './types';
+import {
+    createAFields,
+    createEFields,
+    createIFields,
+    createOFields,
+    createSFields,
+    updateAField,
+    updateEField,
+    updateIField,
+    updateOField,
+    updateSField,
+} from './service';
+import { CreateFieldsReq, UpdateFieldReq } from './types';
 
 interface IField {
     field_id: string;
@@ -17,6 +28,82 @@ const fields: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     //         reply.send(err);
     //     }
     // });
+    server.route({
+        method: 'POST',
+        url: '/a-field',
+        schema: {
+            body: CreateFieldsReq,
+        },
+        handler: async (request, reply) => {
+            try {
+                await createAFields(server, request.body);
+                return null;
+            } catch (err) {
+                reply.code(500).send(err);
+            }
+        },
+    });
+    server.route({
+        method: 'POST',
+        url: '/e-field',
+        schema: {
+            body: CreateFieldsReq,
+        },
+        handler: async (request, reply) => {
+            try {
+                await createEFields(server, request.body);
+                return null;
+            } catch (err) {
+                reply.code(500).send(err);
+            }
+        },
+    });
+    server.route({
+        method: 'POST',
+        url: '/i-field',
+        schema: {
+            body: CreateFieldsReq,
+        },
+        handler: async (request, reply) => {
+            try {
+                await createIFields(server, request.body);
+                return null;
+            } catch (err) {
+                reply.code(500).send(err);
+            }
+        },
+    });
+    server.route({
+        method: 'POST',
+        url: '/o-field',
+        schema: {
+            body: CreateFieldsReq,
+        },
+        handler: async (request, reply) => {
+            try {
+                await createOFields(server, request.body);
+                return null;
+            } catch (err) {
+                reply.code(500).send(err);
+            }
+        },
+    });
+    server.route({
+        method: 'POST',
+        url: '/s-field',
+        schema: {
+            body: CreateFieldsReq,
+        },
+        handler: async (request, reply) => {
+            try {
+                await createSFields(server, request.body);
+                return null;
+            } catch (err) {
+                reply.code(500).send(err);
+            }
+        },
+    });
+
     server.route({
         method: 'PUT',
         url: '/a-field/:field_id',
@@ -54,7 +141,7 @@ const fields: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         handler: async (request, reply) => {
             try {
                 const { field_id } = request.params as IField;
-                await updateAField(server, request.body, field_id);
+                await updateEField(server, request.body, field_id);
                 return null;
             } catch (err) {
                 reply.code(500).send(err);
@@ -76,7 +163,7 @@ const fields: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         handler: async (request, reply) => {
             try {
                 const { field_id } = request.params as IField;
-                await updateAField(server, request.body, field_id);
+                await updateIField(server, request.body, field_id);
                 return null;
             } catch (err) {
                 reply.code(500).send(err);
@@ -98,7 +185,7 @@ const fields: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         handler: async (request, reply) => {
             try {
                 const { field_id } = request.params as IField;
-                await updateAField(server, request.body, field_id);
+                await updateOField(server, request.body, field_id);
                 return null;
             } catch (err) {
                 reply.code(500).send(err);
@@ -120,7 +207,7 @@ const fields: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         handler: async (request, reply) => {
             try {
                 const { field_id } = request.params as IField;
-                await updateAField(server, request.body, field_id);
+                await updateSField(server, request.body, field_id);
                 return null;
             } catch (err) {
                 reply.code(500).send(err);
