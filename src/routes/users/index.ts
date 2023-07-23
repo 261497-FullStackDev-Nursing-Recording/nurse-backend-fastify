@@ -6,18 +6,18 @@ const GetUsersResDTO = Type.Array(
         id: Type.String(),
         username: Type.String(),
         role: Type.String(),
-        createdAt: Type.String(),
+        created_at: Type.String(),
     }),
 );
 
 const users: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-    fastify.addHook('onRequest', async (request, reply) => {
-        try {
-            await request.jwtVerify();
-        } catch (err) {
-            reply.send(err);
-        }
-    });
+    // fastify.addHook('onRequest', async (request, reply) => {
+    //     try {
+    //         await request.jwtVerify();
+    //     } catch (err) {
+    //         reply.send(err);
+    //     }
+    // });
 
     fastify.route({
         method: 'GET',
@@ -27,7 +27,7 @@ const users: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                 200: GetUsersResDTO,
             },
         },
-        preHandler: fastify.auth([fastify.verifyAdmin]),
+        // preHandler: fastify.auth([fastify.verifyAdmin]),
         handler: async (request, reply) => {
             try {
                 const users = await fastify.prisma.user.findMany();
