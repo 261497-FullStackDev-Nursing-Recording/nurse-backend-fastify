@@ -43,8 +43,8 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         },
         handler: async (request, reply) => {
             const { record_id } = request.params as IRecord;
-            const records = await updateRecord(server, request.body, record_id);
-            return records;
+            await updateRecord(server, request.body, record_id);
+            return null;
         },
     });
 };
