@@ -24,24 +24,28 @@ async function main() {
     await prisma.patient.createMany({
         data: [
             {
+                identification_id: '1',
                 f_name: 'Patient1',
                 l_name: 'Bed1',
                 hn: '001',
                 status: Status.STATUS_1,
             },
             {
+                identification_id: '2',
                 f_name: 'Patient2',
                 l_name: 'Bed2',
                 hn: '002',
                 status: Status.STATUS_2,
             },
             {
+                identification_id: '3',
                 f_name: 'Patient3',
                 l_name: 'Bed3',
                 hn: '003',
                 status: Status.STATUS_3,
             },
             {
+                identification_id: '4',
                 f_name: 'Patient4',
                 l_name: 'Bed3',
                 hn: '003',
