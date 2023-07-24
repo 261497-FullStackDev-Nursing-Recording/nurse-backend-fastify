@@ -49,6 +49,7 @@ model Patient {
   f_name          String
   l_name          String
   hn              String
+  identification_id String
   status          Status
   user_on_patient UserOnPatient[]
   records         Record[]
