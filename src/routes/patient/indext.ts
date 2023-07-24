@@ -1,17 +1,13 @@
-import { Type } from '@sinclair/typebox';
-import { FastifyPluginAsync, RouteHandlerMethod } from 'fastify';
+// import { Type } from '@sinclair/typebox';
+import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
+import { FastifyPluginAsync } from 'fastify';
 
-const GETPatients = Type.Array(
-    Type.Object({
-        id: Type.String(),
-        f_name: Type.String(),
-        l_name: Type.String(),
-        hn: Type.String(),
-        status: Type.String(),
-    }),
-);
+import { searchPatient } from './services';
+// import { RouteHandlerMethod } from 'fastify';
+import { SearchPatientsReq } from './types';
 
 const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+    const server = fastify.withTypeProvider<TypeBoxTypeProvider>();
     fastify.addHook('onRequest', async (req, res) => {
         try {
             await req.jwtVerify();
@@ -20,81 +16,21 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         }
     });
 
-    //get all patients from database
-    fastify.route({
-        method: 'GET',
-        url: '/get_all',
+    server.route({
+        method: 'POST',
+        url: '/search',
         schema: {
-            response: {
-                200: GETPatients,
-            },
+            body: SearchPatientsReq,
         },
-        preHandler: fastify.auth([fastify.verifyJWT]),
-        handler: async (req, res) => {
+        handler: async (req, rep) => {
             try {
-                const patients = await fastify.prisma.patient.findMany();
-
+                const body: any = req.body;
+                const patients = searchPatient(server, body);
                 return patients;
             } catch (err) {
-                res.send(err);
+                rep.code(500).send(err);
             }
         },
-    });
-
-    //create search by using hn number
-    /**
-     * example of this api call
-     *
-     *  localhost5001/patient/get_hn/{hn}
-     *  by {hn} is the parameter that you want to search
-     */
-
-    interface HNParams {
-        hn: string;
-    }
-
-    interface SearchName {
-        f_name?: string;
-        l_name?: string;
-    }
-
-    const getHNHandler: RouteHandlerMethod = async (req, res) => {
-        const { hn } = req.params as HNParams;
-        const { f_name, l_name } = req.query as SearchName;
-
-        try {
-            const patients = await fastify.prisma.patient.findMany({
-                where: {
-                    OR: [{ hn }, { f_name }, { l_name }],
-                },
-            });
-
-            return patients;
-        } catch (err) {
-            res.send(err);
-        }
-    };
-
-    fastify.route({
-        method: 'GET',
-        url: '/search/:hn',
-        schema: {
-            params: {
-                type: 'object',
-                properties: {
-                    hn: { type: 'string' },
-                },
-            },
-            querystring: {
-                type: 'object',
-                properties: {
-                    f_name: { type: 'string' },
-                    l_name: { type: 'string' },
-                },
-            },
-        },
-        preHandler: fastify.auth([fastify.verifyJWT]),
-        handler: getHNHandler,
     });
 };
 
