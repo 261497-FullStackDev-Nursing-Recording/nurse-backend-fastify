@@ -32,6 +32,60 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             }
         },
     });
+
+    server.route({
+        method: 'POST',
+        url: '/linkPatients',
+        schema: {
+            body: {
+                type: 'object',
+                properties: {
+                    user_id: { type: 'string' },
+                    patient_id: { type: 'string' },
+                },
+            },
+        },
+        handler: async (req, rep) => {
+            try {
+                const body: any = req.body;
+                const linkPatients = fastify.prisma.userOnPatient.create({
+                    data: {
+                        user_id: body.user_id,
+                        patient_id: body.patient_id,
+                    },
+                });
+                return linkPatients;
+            } catch (err) {
+                rep.code(500).send(err);
+            }
+        },
+    });
+
+    server.route({
+        method: 'POST',
+        url: '/GetLinkedPatients',
+        schema: {
+            body: {
+                type: 'object',
+                properties: {
+                    user_id: { type: 'string' },
+                },
+            },
+        },
+        handler: async (req, rep) => {
+            try {
+                const body: any = req.body;
+                const GetPatients = fastify.prisma.userOnPatient.findMany({
+                    where: {
+                        user_id: body.user_id,
+                    },
+                });
+                return GetPatients;
+            } catch (err) {
+                rep.code(500).send(err);
+            }
+        },
+    });
 };
 
 export default patients;
