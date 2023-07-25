@@ -73,9 +73,9 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                 });
                 return;
             }
-
+            //to do expiresIn
             const accessToken = fastify.jwt.sign(user, {
-                expiresIn: '60m',
+                // expiresIn: '60m',
             });
             const refreshToken = fastify.jwt.sign(user, {
                 expiresIn: '120m',
@@ -98,7 +98,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             const { iat, exp, ...userWithoutIatExp } = request.user;
 
             const accessToken = fastify.jwt.sign(userWithoutIatExp, {
-                expiresIn: '60m',
+                expiresIn: 'never',
             });
 
             reply.send({
