@@ -74,17 +74,10 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             }
             //to do expiresIn
             const accessToken = fastify.jwt.sign(user, {
-<<<<<<< Updated upstream
                 // expiresIn: '60m',
             });
             const refreshToken = fastify.jwt.sign(user, {
                 expiresIn: '120m',
-=======
-                expiresIn: '15m',
-            });
-            const refreshToken = fastify.jwt.sign(user, {
-                expiresIn: '30m',
->>>>>>> Stashed changes
             });
             reply.send({ accessToken, refreshToken, user });
         },
