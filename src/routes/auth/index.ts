@@ -2,7 +2,7 @@ import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
 import { UserRes } from '../users/types';
-import { signIn } from './services';
+import { me, signIn } from './services';
 import { SignInReq } from './types';
 
 const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
@@ -18,7 +18,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         },
         preHandler: fastify.auth([fastify.verifyJWT]),
         handler: async (request, reply) => {
-            reply.send(request.user);
+            return await me(fastify, request.user.username);
         },
     });
 
@@ -67,6 +67,18 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         url: '/test/admin',
         handler: async (request, reply) => {
             reply.send({ message: 'You can access admin route.' });
+        },
+    });
+
+    server.route({
+        method: 'GET',
+        url: '/logout',
+        schema: {},
+        handler: async (request, reply) => {
+            reply
+                .clearCookie('access_token')
+                .code(200)
+                .send('Successfully logged out');
         },
     });
 };
