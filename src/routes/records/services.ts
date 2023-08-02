@@ -22,15 +22,15 @@ export async function searchRecords(
                 gte: fromDateObj,
             },
         },
-        include: includeFields
-            ? {
-                  a_field: true,
-                  e_field: true,
-                  i_field: true,
-                  o_field: true,
-                  s_field: true,
-              }
-            : undefined,
+        // include: includeFields
+        //     ? {
+        //           a_field: true,
+        //           e_field: true,
+        //           i_field: true,
+        //           o_field: true,
+        //           s_field: true,
+        //       }
+        //     : undefined,
     });
     return records as unknown as GetRecordsRes; // I will see if there is a better way to do this. Right now if I don't do this typescript will keep complaining.
 }

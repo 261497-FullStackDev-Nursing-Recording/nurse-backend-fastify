@@ -1,27 +1,9 @@
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
-import { Type } from '@sinclair/typebox';
 import { FastifyPluginAsync } from 'fastify';
 
-const UserType = Type.Object({
-    username: Type.String(),
-    role: Type.String(),
-});
-
-const SignInReqDTO = Type.Object({
-    username: Type.String(),
-    password: Type.String(),
-});
-
-const SignInResDTO = Type.Object({
-    accessToken: Type.String(),
-    refreshToken: Type.String(),
-    user: UserType,
-});
-
-const RefreshTokenResDTO = Type.Object({
-    accessToken: Type.String(),
-    user: UserType,
-});
+import { UserRes } from '../users/types';
+import { signIn } from './services';
+import { SignInReq } from './types';
 
 const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     const server = fastify.withTypeProvider<TypeBoxTypeProvider>();
@@ -31,7 +13,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         url: '/me',
         schema: {
             response: {
-                200: UserType,
+                200: UserRes,
             },
         },
         preHandler: fastify.auth([fastify.verifyJWT]),
@@ -44,73 +26,36 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'POST',
         url: '/signin',
         schema: {
-            body: SignInReqDTO,
+            body: SignInReq,
             response: {
-                200: SignInResDTO,
-                401: Type.Object({ message: Type.String() }),
+                200: UserRes,
             },
         },
+
         handler: async (request, reply) => {
-            const { username, password } = request.body as any;
-
-            // Look up database
-            const user = await fastify.prisma.user.findUnique({
-                where: { username: username },
+            const user = await signIn(fastify, request.body);
+            const token = await reply.jwtSign({
+                username: user.username,
+                role: user.role,
             });
-
-            if (!user) {
-                reply.code(401).send({ message: 'No username found' });
-                return; //Typescript will complain if you don't return here
-            }
-
-            // Verify user
-            const valid = await fastify.bcrypt.compare(password, user.password);
-
-            if (!valid) {
-                reply.code(401).send({
-                    message: 'Incorrect username / password combination.',
-                });
-                return;
-            }
-            //to do expiresIn
-            const accessToken = fastify.jwt.sign(user, {
-                // expiresIn: '60m',
-            });
-            const refreshToken = fastify.jwt.sign(user, {
-                expiresIn: '120m',
-            });
-            reply.send({ accessToken, refreshToken, user });
-        },
-    });
-
-    server.route({
-        method: 'POST',
-        url: '/refreshtoken',
-        schema: {
-            response: {
-                200: RefreshTokenResDTO,
-            },
-        },
-        preHandler: fastify.auth([fastify.verifyJWT]),
-        handler: async (request, reply) => {
-            // For some reason, the user object contains iat and exp fields which I need to remove.
-            const { iat, exp, ...userWithoutIatExp } = request.user;
-
-            const accessToken = fastify.jwt.sign(userWithoutIatExp, {
-                expiresIn: 'never',
-            });
-
-            reply.send({
-                accessToken: accessToken,
-                user: request.user,
-            });
+            reply
+                .setCookie('access_token', token, {
+                    domain: process.env.SITE_DOMAIN || 'localhost',
+                    path: '/',
+                    httpOnly: true,
+                    sameSite: 'lax',
+                    secure: process.env.NODE_ENV === 'production',
+                    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+                })
+                .code(200)
+                .send(user);
         },
     });
 
     server.route({
         method: 'GET',
         preHandler: fastify.auth([fastify.verifyJWT]),
-        url: '/authenticated_route',
+        url: '/test/user',
         handler: async (request, reply) => {
             reply.send({ message: 'You can access protected route.' });
         },
@@ -119,7 +64,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     server.route({
         method: 'GET',
         preHandler: fastify.auth([fastify.verifyAdmin]),
-        url: '/admin_route',
+        url: '/test/admin',
         handler: async (request, reply) => {
             reply.send({ message: 'You can access admin route.' });
         },

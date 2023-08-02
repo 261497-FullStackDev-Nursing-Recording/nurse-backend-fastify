@@ -5,36 +5,6 @@ import { sseRouteHandler } from '../../plugins/sse/utils';
 const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     fastify.route({
         method: 'GET',
-        url: '/seedusers',
-        handler: async (request, reply) => {
-            try {
-                await fastify.prisma.user.createMany({
-                    data: [
-                        {
-                            f_name: 'test',
-                            l_name: 'test',
-                            username: 'admin',
-                            password: await fastify.bcrypt.hash('admin'),
-                            role: 'ADMIN',
-                        },
-                        {
-                            f_name: 'test',
-                            l_name: 'test',
-                            username: 'user',
-                            password: await fastify.bcrypt.hash('user'),
-                            role: 'USER',
-                        },
-                    ],
-                });
-            } catch (err) {
-                reply.code(500).send(err);
-            }
-            return { success: true };
-        },
-    });
-
-    fastify.route({
-        method: 'GET',
         url: '/sse',
         handler: sseRouteHandler,
     });

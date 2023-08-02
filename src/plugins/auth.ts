@@ -1,13 +1,42 @@
 import fastifyAuth from '@fastify/auth';
+import fastifyCookie from '@fastify/cookie';
 import fastifyJWT from '@fastify/jwt';
 import fp from 'fastify-plugin';
+
+declare module 'fastify' {
+    export interface FastifyInstance {
+        verifyJWT(request: any, reply: any, done: any): Promise<void>;
+        publicRoute(request: any, reply: any, done: any): Promise<void>;
+        verifyAdmin(request: any, reply: any, done: any): Promise<void>;
+    }
+}
+
+declare module '@fastify/jwt' {
+    interface FastifyJWT {
+        payload: { username: string; role: string }; // payload type is used for signing and verifying
+        user: {
+            username: string;
+            role: string;
+            iat: number;
+            exp: number;
+        }; // user type is return type of `request.user` object
+    }
+}
 
 export default fp(async (fastify, opts) => {
     if (!process.env.JWT_SECRET) {
         throw new Error('JWT_SECRET is not defined');
     }
-    fastify.register(fastifyJWT, { secret: process.env.JWT_SECRET });
+    fastify.register(fastifyJWT, {
+        secret: process.env.JWT_SECRET,
+        cookie: { cookieName: 'access_token', signed: false },
+    });
     fastify.register(fastifyAuth);
+    fastify.register(fastifyCookie, {
+        secret: process.env.JWT_SECRET,
+        hook: 'onRequest',
+        parseOptions: {},
+    });
     fastify.decorate('verifyJWT', verifyJWT);
     fastify.decorate('verifyAdmin', verifyAdmin);
     fastify.decorate('publicRoute', publicRoute);
@@ -37,24 +66,4 @@ async function verifyAdmin(request: any, reply: any, done: any): Promise<any> {
         reply.code(401).send({ message: 'Unauthorized' });
     }
     done();
-}
-
-declare module 'fastify' {
-    export interface FastifyInstance {
-        verifyJWT(request: any, reply: any, done: any): Promise<void>;
-        publicRoute(request: any, reply: any, done: any): Promise<void>;
-        verifyAdmin(request: any, reply: any, done: any): Promise<void>;
-    }
-}
-
-declare module '@fastify/jwt' {
-    interface FastifyJWT {
-        payload: { username: string; role: string }; // payload type is used for signing and verifying
-        user: {
-            username: string;
-            role: string;
-            iat: number;
-            exp: number;
-        }; // user type is return type of `request.user` object
-    }
 }

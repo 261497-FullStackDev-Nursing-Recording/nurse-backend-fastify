@@ -2,11 +2,12 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl"]
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -35,6 +36,7 @@ model User {
   // updatedAt DateTime @updatedAt
   user_on_patient UserOnPatient[]
   records         Record[]
+  fields          Field[]
 }
 
 enum Status {
@@ -45,14 +47,14 @@ enum Status {
 }
 
 model Patient {
-  id              String          @id @default(uuid())
-  f_name          String
-  l_name          String
-  hn              String
+  id                String          @id @default(uuid())
+  f_name            String
+  l_name            String
+  hn                String
   identification_id String
-  status          Status
-  user_on_patient UserOnPatient[]
-  records         Record[]
+  status            Status
+  user_on_patient   UserOnPatient[]
+  records           Record[]
 }
 
 model UserOnPatient {
@@ -64,54 +66,54 @@ model UserOnPatient {
   @@id([user_id, patient_id])
 }
 
+enum FieldCode {
+  O_TEXT
+  S_TEXT
+  NDX_TEXT
+  IHEAL_TEXT
+  IREHAB_TEXT
+  IPREVENT_TEXT
+  IPROMOTE_TEXT
+  IPHYCHO_TEXT
+  E_TEXT
+}
+
 model Record {
-  id           String    @id @default(uuid())
-  created_by   User      @relation(fields: [user_id], references: [id])
+  id           String   @id @default(uuid())
+  created_by   User     @relation(fields: [user_id], references: [id])
   user_id      String
-  patient      Patient?  @relation(fields: [patient_id], references: [id])
-  patient_id   String?
+  patient      Patient  @relation(fields: [patient_id], references: [id])
+  patient_id   String
   bed_number   Int
   ward         String
-  diagnose     String
+  diseaseGroup String
   shift        Shift
-  created_at   DateTime  @default(now())
-  modified_at  DateTime  @updatedAt
+  created_at   DateTime @default(now())
+  modified_at  DateTime @updatedAt
   visit_number String
-  s_field      S_Field[]
-  a_field      A_Field[]
-  e_field      E_Field[]
-  o_field      O_Field[]
-  i_field      I_Field[]
+  fields       Field[]
 }
 
-model S_Field {
-  id        String  @id @default(uuid())
-  record    Record? @relation(fields: [record_id], references: [id])
-  record_id String?
-  message   String
-}
-model A_Field {
-  id        String  @id @default(uuid())
-  record    Record? @relation(fields: [record_id], references: [id])
-  record_id String?
-  message   String
-}
-model E_Field {
-  id        String  @id @default(uuid())
-  record    Record? @relation(fields: [record_id], references: [id])
-  record_id String?
-  message   String
-}
-model O_Field {
-  id        String  @id @default(uuid())
-  record    Record? @relation(fields: [record_id], references: [id])
-  record_id String?
-  message   String
-}
-model I_Field {
-  id        String  @id @default(uuid())
-  record    Record? @relation(fields: [record_id], references: [id])
-  record_id String?
-  message   String
+model Field {
+  id               String         @id @default(uuid())
+  record           Record         @relation(fields: [record_id], references: [id])
+  record_id        String
+  created_by       User           @relation(fields: [user_id], references: [id])
+  user_id          String
+  field_code       FieldCode
+  field_pre_label  String?
+  field_value      String
+  field_post_label String?
+  parents          FieldOnField[] @relation("ParentField")
+  children         FieldOnField[] @relation("ChildrenField")
+  created_at       DateTime       @default(now())
+  modified_at      DateTime       @updatedAt
 }
 
+model FieldOnField {
+  id        String @id @default(uuid())
+  parents   Field  @relation("ParentField", fields: [parent_id], references: [id])
+  parent_id String
+  childs    Field  @relation("ChildrenField", fields: [child_id], references: [id])
+  child_id  String
+}

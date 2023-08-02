@@ -1,7 +1,26 @@
-import { PrismaClient } from '@prisma/client';
-import { Patient, Role, Shift, Status, User } from '@prisma/client';
+import { faker } from '@faker-js/faker';
+import {
+    Field,
+    FieldCode,
+    Patient,
+    PrismaClient,
+    Role,
+    Shift,
+    Status,
+    User,
+} from '@prisma/client';
 import { fastify } from 'fastify';
 import fastifyBcrypt from 'fastify-bcrypt';
+
+// Setting
+const settings = {
+    numUsers: 100,
+    numPatients: 100,
+    numUserOnPatients: 500,
+    numRecords: 100,
+    numFieldsPerRecords: 50,
+    numFieldsOnFieldsPerRecord: 200,
+};
 
 const prisma = new PrismaClient();
 
@@ -10,98 +29,50 @@ async function main() {
     app.register(fastifyBcrypt);
     await app.ready();
 
-    await prisma.a_Field.deleteMany({});
-    await prisma.e_Field.deleteMany({});
-    await prisma.i_Field.deleteMany({});
-    await prisma.o_Field.deleteMany({});
-    await prisma.s_Field.deleteMany({});
+    await prisma.fieldOnField.deleteMany({});
     await prisma.userOnPatient.deleteMany({});
+    await prisma.field.deleteMany({});
     await prisma.record.deleteMany({});
     await prisma.user.deleteMany({});
     await prisma.patient.deleteMany({});
 
     //  Create patient
-    await prisma.patient.createMany({
-        data: [
-            {
-                identification_id: '1',
-                f_name: 'Patient1',
-                l_name: 'Bed1',
-                hn: '001',
-                status: Status.STATUS_1,
-            },
-            {
-                identification_id: '2',
-                f_name: 'Patient2',
-                l_name: 'Bed2',
-                hn: '002',
-                status: Status.STATUS_2,
-            },
-            {
-                identification_id: '3',
-                f_name: 'Patient3',
-                l_name: 'Bed3',
-                hn: '003',
-                status: Status.STATUS_3,
-            },
-            {
-                identification_id: '4',
-                f_name: 'Patient4',
-                l_name: 'Bed3',
-                hn: '003',
-                status: Status.STATUS_4,
-            },
-        ],
+    const patitentsData = [...Array(settings.numPatients).keys()].map((idx) => {
+        return {
+            identification_id: faker.string.numeric(5),
+            f_name: faker.person.firstName(),
+            l_name: faker.person.lastName(),
+            hn: faker.string.numeric(7),
+            status: getRandomStatus(),
+        };
     });
+    await prisma.patient.createMany({ data: patitentsData });
 
     //  Create users
-    await prisma.user.createMany({
-        data: [
-            {
-                f_name: 'First1',
-                l_name: 'Last1',
-                username: 'username1',
-                password: await app.bcrypt.hash('1234'),
-                role: Role.ADMIN,
-            },
-            {
-                f_name: 'First2',
-                l_name: 'Last2',
-                username: 'username2',
-                password: await app.bcrypt.hash('1234'),
-                role: Role.NURSE,
-            },
-            {
-                f_name: 'First3',
-                l_name: 'Last3',
-                username: 'username3',
-                password: await app.bcrypt.hash('1234'),
-                role: Role.NURSE,
-            },
-            {
-                f_name: 'First4',
-                l_name: 'Last4',
-                username: 'username4',
-                password: await app.bcrypt.hash('1234'),
-                role: Role.NURSE,
-            },
-            {
-                f_name: 'First5',
-                l_name: 'Last5',
-                username: 'username5',
-                password: await app.bcrypt.hash('1234'),
-                role: Role.NURSE,
-            },
-        ],
+    const password = await app.bcrypt.hash('1234');
+    const usersData = [...Array(settings.numUsers).keys()].map((idx) => {
+        return {
+            f_name: faker.person.firstName(),
+            l_name: faker.person.lastName(),
+            username: `username${idx + 1}`,
+            password: password,
+            role: getRandomRole(),
+        };
     });
+    // Fix some of the user roles for development
+    usersData[0].role = Role.ADMIN;
+    usersData[1].role = Role.USER;
+    await prisma.user.createMany({ data: usersData });
 
     // Create random links between users and patients
     const nurses = await prisma.user.findMany({ where: { role: Role.NURSE } });
     const patients = await prisma.patient.findMany();
-    const usersOnPatients = [...Array(10).keys()].map((idx) => ({
-        user_id: getRandomElement<User>(nurses).id,
-        patient_id: getRandomElement<Patient>(patients).id,
-    }));
+    const usersOnPatients = [...Array(settings.numUserOnPatients).keys()].map(
+        (idx) => ({
+            user_id: getRandomElement<User>(nurses).id,
+            patient_id: getRandomElement<Patient>(patients).id,
+        }),
+    );
     for (const uop of usersOnPatients) {
         try {
             await prisma.userOnPatient.create({
@@ -113,14 +84,14 @@ async function main() {
     }
 
     // Create records
-    const recordsData = [...Array(10).keys()].map((idx) => ({
+    const recordsData = [...Array(settings.numRecords).keys()].map((idx) => ({
         user_id: getRandomElement<User>(nurses).id,
         patient_id: getRandomElement<Patient>(patients).id,
-        bed_number: idx,
-        ward: 'ward',
-        diagnose: 'diagnose',
-        shift: Shift.EVENING,
-        visit_number: 'visit_number',
+        bed_number: faker.number.int(100),
+        ward: 'Ward',
+        shift: getRandomShift(),
+        visit_number: faker.string.numeric(8),
+        diseaseGroup: 'DISEASE_GROUP_1',
     }));
 
     await prisma.record.createMany({
@@ -130,40 +101,41 @@ async function main() {
     // Create nurse notes
     const records = await prisma.record.findMany({});
     records.forEach(async (record) => {
-        await prisma.a_Field.createMany({
-            data: [
-                { record_id: record.id, message: 'a_field1' },
-                { record_id: record.id, message: 'a_field2' },
-            ],
+        const fieldsData = [...Array(settings.numFieldsPerRecords).keys()].map(
+            (idx) => {
+                return {
+                    record_id: record.id,
+                    user_id: getRandomElement<User>(nurses).id,
+                    field_code: getRandomFieldCode(),
+                    field_pre_label: faker.lorem.sentence(),
+                    field_value: faker.lorem.paragraph(),
+                    field_post_label: faker.lorem.sentence(),
+                };
+            },
+        );
+        await prisma.field.createMany({ data: fieldsData });
+        const fields = await prisma.field.findMany({
+            where: { record_id: record.id },
         });
 
-        await prisma.e_Field.createMany({
-            data: [
-                { record_id: record.id, message: 'e_field1' },
-                { record_id: record.id, message: 'e_field2' },
-            ],
+        const fieldsOnFields = [
+            ...Array(settings.numFieldsOnFieldsPerRecord).keys(),
+        ].map((idx) => {
+            const parent = getRandomElement<Field>(fields);
+            const fieldsFilt = fields.filter((f) => f.id !== parent.id);
+            const child = getRandomElement<Field>(fieldsFilt);
+            return { parent_id: parent.id, child_id: child.id };
         });
 
-        await prisma.i_Field.createMany({
-            data: [
-                { record_id: record.id, message: 'i_field1' },
-                { record_id: record.id, message: 'i_field2' },
-            ],
-        });
-
-        await prisma.o_Field.createMany({
-            data: [
-                { record_id: record.id, message: 'o_field1' },
-                { record_id: record.id, message: 'o_field2' },
-            ],
-        });
-
-        await prisma.s_Field.createMany({
-            data: [
-                { record_id: record.id, message: 's_field1' },
-                { record_id: record.id, message: 's_field2' },
-            ],
-        });
+        for (const fof of fieldsOnFields) {
+            try {
+                await prisma.fieldOnField.create({
+                    data: fof,
+                });
+            } catch (e) {
+                // If there is a duplicate of user_id and patient_id, just ignore it
+            }
+        }
     });
 }
 
@@ -177,4 +149,24 @@ main()
 
 function getRandomElement<T>(array: T[]) {
     return array[Math.floor(Math.random() * array.length)];
+}
+
+function getRandomFieldCode() {
+    const FieldCodes = Object.values(FieldCode);
+    return getRandomElement(FieldCodes);
+}
+
+function getRandomStatus() {
+    const Statuses = Object.values(Status);
+    return getRandomElement(Statuses);
+}
+
+function getRandomRole() {
+    const Roles = Object.values(Role);
+    return getRandomElement(Roles);
+}
+
+function getRandomShift() {
+    const Shifts = Object.values(Shift);
+    return getRandomElement(Shifts);
 }
