@@ -112,8 +112,8 @@ model Field {
 
 model FieldOnField {
   id        String @id @default(uuid())
-  parents   Field  @relation("ParentField", fields: [parent_id], references: [id])
+  parent    Field  @relation("ParentField", fields: [parent_id], references: [id])
   parent_id String
-  childs    Field  @relation("ChildrenField", fields: [child_id], references: [id])
+  child     Field  @relation("ChildrenField", fields: [child_id], references: [id])
   child_id  String
 }
