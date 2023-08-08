@@ -15,7 +15,7 @@ const data = {
 
 const main = async () => {
     const templateHtml = fs.readFileSync(
-        path.join(__dirname, 'template', 'template2.html'),
+        path.join(__dirname, 'templates', 'template2.html'),
         'utf8',
     );
     const template = handlebars.compile(templateHtml);
