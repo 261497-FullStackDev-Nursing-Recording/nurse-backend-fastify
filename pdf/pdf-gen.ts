@@ -50,9 +50,17 @@ const main = async () => {
     // create a new page
     const page = await browser.newPage();
 
+    await page.addStyleTag({
+        path: path.join(__dirname, 'templates', 'styles', 'style.css'),
+    });
+
     // set your html as the pages content
-    await page.setContent(html, {
-        waitUntil: 'domcontentloaded',
+    // await page.setContent(html, {
+    //     waitUntil: 'domcontentloaded',
+    // });
+
+    await page.goto(`data:text/html;charset=UTF-8,${html}`, {
+        waitUntil: 'networkidle0',
     });
 
     // create a pdf buffer
