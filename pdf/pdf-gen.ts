@@ -20,6 +20,7 @@ const main = async () => {
     );
     const template = handlebars.compile(templateHtml);
     const html = template(data);
+    fs.writeFileSync(path.join(__dirname, 'output.html'), html);
 
     const pdfPath = path.join(
         __dirname,
@@ -34,10 +35,10 @@ const main = async () => {
         format: 'A4',
         displayHeaderFooter: false,
         margin: {
-            top: '30px',
-            bottom: '30px',
-            left: '30px',
-            right: '30px',
+            top: '1cm',
+            bottom: '1cm',
+            left: '1cm',
+            right: '1cm',
         },
         printBackground: true,
         path: pdfPath,
@@ -53,13 +54,13 @@ const main = async () => {
     const page = await browser.newPage();
 
     // set your html as the pages content
-    // await page.setContent(html, {
-    //     waitUntil: 'domcontentloaded',
-    // });
-
-    await page.goto(`data:text/html;charset=UTF-8,${html}`, {
-        waitUntil: 'networkidle0',
+    await page.setContent(html, {
+        waitUntil: 'domcontentloaded',
     });
+
+    // await page.goto(`data:text/html;charset=UTF-8,${html}`, {
+    //     waitUntil: 'networkidle0',
+    // });
 
     await page.addStyleTag({
         path: path.join(__dirname, 'templates', 'styles', 'style.css'),
