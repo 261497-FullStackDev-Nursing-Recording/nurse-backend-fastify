@@ -1,0 +1,15 @@
+@font-face {
+    font-family: 'Prompt';
+    src: url('pdf/templates/styles/fonts/Prompt-Regular.ttf');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: 'Prompt';
+    src: url('pdf/templates/styles/fonts/Prompt-Bold.ttf');
+    font-weight: 700;
+}
+
+* {
+    font-family: Prompt, sans-serif;
+}

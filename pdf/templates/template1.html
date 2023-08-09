@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link rel="stylesheet" href="./styles/style.css" />
+        <link rel="stylesheet" href="./styles/font-dev.css" />
+    </head>
+    <body>
+        <h1 class="text-3xl font-bold underline text-center">
+            การบันทึกทางพยาบาล
+        </h1>
+        {{#each datas}}
+        <div class="font-bold mt-2">{{ndx}}</div>
+        <table class="max-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead>
+                <tr>
+                    <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                    >
+                        S
+                    </th>
+                    <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                    >
+                        O
+                    </th>
+                    <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                    >
+                        I
+                    </th>
+                    <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase"
+                    >
+                        E
+                    </th>
+                </tr>
+            </thead>
+            <tbody
+                class="align-top divide-y divide-gray-200 dark:divide-gray-700"
+            >
+                <tr>
+                    <td
+                        class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200"
+                    >
+                        <ul class="list-disc">
+                            {{#each notes.sData}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
+                    </td>
+                    <td
+                        class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200"
+                    >
+                        <ul class="list-disc">
+                            {{#each notes.oData}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
+                    </td>
+                    <td
+                        class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200"
+                    >
+                        <ul class="list-disc">
+                            {{#each notes.iData}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
+                    </td>
+                    <td
+                        class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200"
+                    >
+                        <ul class="list-disc">
+                            {{#each notes.eData}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        {{/each}}
+    </body>
+</html>
