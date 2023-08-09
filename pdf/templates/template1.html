@@ -1,73 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
-        <title>Student's profile</title>
-        <style type="text/css">
-            body {
-                width: 1200px;
-                margin: 0;
-                padding: 0px;
-                font-size: 16px;
-                line-height: 24px;
-                font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial,
-                    sans-serif;
-                color: rgb(33, 33, 33);
-            }
-            .report-header {
-                background: rgb(178, 230, 212);
-                color: rgb(102, 102, 102);
-                padding: 15px;
-                padding-left: 200px;
-                box-sizing: border-box;
-                display: block;
-                position: relative;
-            }
-            .report-header .logo {
-                position: absolute;
-                top: 40px;
-                left: 15px;
-                width: 150px;
-            }
-            .report-footer {
-                background: rgb(178, 230, 212);
-                color: rgb(102, 102, 102);
-                padding: 15px;
-                box-sizing: border-box;
-                display: block;
-                position: relative;
-            }
-            .report-body {
-                width: 70%;
-                display: inline-block;
-                position: relative;
-                padding: 15px;
-                box-sizing: border-box;
-                vertical-align: top;
-            }
-            .report-photo {
-                width: 28%;
-                display: inline-block;
-                position: relative;
-                vertical-align: top;
-                box-sizing: border-box;
-                margin-top: 15px;
-            }
-            .report-body .info p {
-                border: #ccc solid 1px;
-                padding: 5px;
-                display: block;
-                position: relative;
-            }
-        </style>
-        <meta charset="utf-8" />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <link rel="stylesheet" href="./styles/style.css" />
+        <link rel="stylesheet" href="./styles/font-dev.css" />
     </head>
     <body>
-        <div class="report-header">
-            <img src="logo.png" class="logo" />
-            <h3>{{title}}</h3>
-            <p>{{date}}</p>
-        </div>
-        <div class="report-body">
+        <div class="container mx-auto mt-4">
+            <h1 class="text-3xl font-bold underline">การบันทึกทางพยาบาล</h1>
             <div class="info">
                 <p>Student: {{name}}</p>
                 <p>OEN: {{oen}}</p>
@@ -75,15 +17,91 @@
                 <p>Birthdate: {{birthdate}}</p>
                 <p>Course: {{course}}</p>
             </div>
-            <div class="obs">
-                <p>Obs: {{obs}}</p>
+
+            <div class="flex flex-col">
+                <div class="overflow-x-auto sm:-mx-6 lg:-mx-8">
+                    <div class="inline-block min-w-full py-2 sm:px-6 lg:px-8">
+                        <div class="overflow-hidden">
+                            <table
+                                class="min-w-full text-left text-sm font-light"
+                            >
+                                <thead
+                                    class="border-b font-medium dark:border-neutral-500"
+                                >
+                                    <tr>
+                                        <th scope="col" class="px-6 py-4">#</th>
+                                        <th scope="col" class="px-6 py-4">
+                                            First
+                                        </th>
+                                        <th scope="col" class="px-6 py-4">
+                                            Last
+                                        </th>
+                                        <th scope="col" class="px-6 py-4">
+                                            Handle
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        class="border-b dark:border-neutral-500"
+                                    >
+                                        <td
+                                            class="whitespace-nowrap px-6 py-4 font-medium"
+                                        >
+                                            1
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            Mark
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            Otto
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            @mdo
+                                        </td>
+                                    </tr>
+                                    <tr
+                                        class="border-b dark:border-neutral-500"
+                                    >
+                                        <td
+                                            class="whitespace-nowrap px-6 py-4 font-medium"
+                                        >
+                                            2
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            Jacob
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            Thornton
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            @fat
+                                        </td>
+                                    </tr>
+                                    <tr
+                                        class="border-b dark:border-neutral-500"
+                                    >
+                                        <td
+                                            class="whitespace-nowrap px-6 py-4 font-medium"
+                                        >
+                                            3
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            Larry
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            Wild
+                                        </td>
+                                        <td class="whitespace-nowrap px-6 py-4">
+                                            @twitter
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="report-photo">
-            <img src="student.png" />
-        </div>
-        <div class="report-footer">
-            A generic Company - All Rights reserved.
         </div>
     </body>
 </html>

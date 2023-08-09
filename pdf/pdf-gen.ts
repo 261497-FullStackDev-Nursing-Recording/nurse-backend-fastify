@@ -15,7 +15,7 @@ const data = {
 
 const main = async () => {
     const templateHtml = fs.readFileSync(
-        path.join(__dirname, 'templates', 'template2.html'),
+        path.join(__dirname, 'templates', 'template1.html'),
         'utf8',
     );
     const template = handlebars.compile(templateHtml);
@@ -29,8 +29,8 @@ const main = async () => {
 
     const options = {
         // width: '1230px',
-        headerTemplate: '<p></p>',
-        footerTemplate: '<p></p>',
+        headerTemplate: '<p>Header</p>',
+        footerTemplate: '<p>Footer</p>',
         format: 'A4',
         displayHeaderFooter: false,
         margin: {
@@ -63,6 +63,10 @@ const main = async () => {
 
     await page.addStyleTag({
         path: path.join(__dirname, 'templates', 'styles', 'style.css'),
+    });
+
+    await page.addStyleTag({
+        path: path.join(__dirname, 'templates', 'styles', 'font.css'),
     });
 
     // create a pdf buffer
