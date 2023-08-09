@@ -1,17 +1,9 @@
+import { datas } from './data';
+
 const puppeteer = require('puppeteer');
 const handlebars = require('handlebars');
 const fs = require('fs');
 const path = require('path');
-
-const data = {
-    title: 'A new Brazilian School',
-    date: '05/12/2018',
-    name: 'NR',
-    age: 28,
-    birthdate: '12/07/1990',
-    course: 'Computer Science',
-    obs: 'Graduated in 2014 by Federal University of Lavras, work with Full-Stack development and E-commerce.',
-};
 
 const main = async () => {
     const templateHtml = fs.readFileSync(
@@ -19,13 +11,14 @@ const main = async () => {
         'utf8',
     );
     const template = handlebars.compile(templateHtml);
-    const html = template(data);
-    fs.writeFileSync(path.join(__dirname, 'output.html'), html);
+    console.log(JSON.stringify(datas));
+    const html = template({ datas });
+    fs.writeFileSync(path.join(__dirname, 'templates', 'output.html'), html);
 
     const pdfPath = path.join(
         __dirname,
         'output',
-        `${data.name}-${new Date().getTime()}.pdf`,
+        `Test-${new Date().getTime()}.pdf`,
     );
 
     const options = {
