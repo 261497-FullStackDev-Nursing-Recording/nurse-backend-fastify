@@ -1,3 +1,5 @@
+import { type PDFOptions } from 'puppeteer';
+
 import { datas } from './data';
 
 const puppeteer = require('puppeteer');
@@ -21,7 +23,7 @@ const main = async () => {
         `Test-${new Date().getTime()}.pdf`,
     );
 
-    const options = {
+    const options: PDFOptions = {
         // width: '1230px',
         headerTemplate: '<p>Header</p>',
         footerTemplate: '<p>Footer</p>',
@@ -35,6 +37,7 @@ const main = async () => {
         },
         printBackground: true,
         path: pdfPath,
+        landscape: true,
     };
 
     // launch a new chrome instance

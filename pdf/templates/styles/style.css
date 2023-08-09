@@ -485,11 +485,17 @@ video {
   --tw-backdrop-saturate:  ;
   --tw-backdrop-sepia:  ;
 }
+.mt-2 {
+  margin-top: 0.5rem;
+}
 .table {
   display: table;
 }
-.min-w-full {
-  min-width: 100%;
+.max-w-full {
+  max-width: 100%;
+}
+.list-disc {
+  list-style-type: disc;
 }
 .divide-y > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-y-reverse: 0;
@@ -499,9 +505,6 @@ video {
 .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-opacity: 1;
   border-color: rgb(229 231 235 / var(--tw-divide-opacity));
-}
-.whitespace-nowrap {
-  white-space: nowrap;
 }
 .px-6 {
   padding-left: 1.5rem;
@@ -517,6 +520,12 @@ video {
 }
 .text-left {
   text-align: left;
+}
+.text-center {
+  text-align: center;
+}
+.align-top {
+  vertical-align: top;
 }
 .text-3xl {
   font-size: 1.875rem;

@@ -8,9 +8,11 @@
         <link rel="stylesheet" href="./styles/font-dev.css" />
     </head>
     <body>
-        <h1 class="text-3xl font-bold underline">การบันทึกทางพยาบาล</h1>
+        <h1 class="text-3xl font-bold underline text-center">
+            การบันทึกทางพยาบาล
+        </h1>
         {{#each datas}}
-        <div class="font-bold">{{ndx}}</div>
+        <div class="font-bold mt-2">{{ndx}}</div>
         <table class="max-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead>
                 <tr>
@@ -36,35 +38,45 @@
                     </th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
+            <tbody
+                class="align-top divide-y divide-gray-200 dark:divide-gray-700"
+            >
                 <tr>
                     <td
                         class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200"
                     >
-                        {{#each notes.sData}}
-                        <div class="mt-2">{{this}}</div>
-                        {{/each}}
+                        <ul class="list-disc">
+                            {{#each notes.sData}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
                     </td>
                     <td
                         class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200"
                     >
-                        {{#each notes.oData}}
-                        <div>{{this}}</div>
-                        {{/each}}
+                        <ul class="list-disc">
+                            {{#each notes.oData}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
                     </td>
                     <td
                         class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200"
                     >
-                        {{#each notes.iData}}
-                        <div>{{this}}</div>
-                        {{/each}}
+                        <ul class="list-disc">
+                            {{#each notes.iData}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
                     </td>
                     <td
                         class="px-6 py-4 text-sm font-medium text-gray-800 dark:text-gray-200"
                     >
-                        {{#each notes.eData}}
-                        <div>{{this}}</div>
-                        {{/each}}
+                        <ul class="list-disc">
+                            {{#each notes.eData}}
+                            <li>{{this}}</li>
+                            {{/each}}
+                        </ul>
                     </td>
                 </tr>
             </tbody>
