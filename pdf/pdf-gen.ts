@@ -34,8 +34,10 @@ const main = async () => {
         format: 'A4',
         displayHeaderFooter: false,
         margin: {
-            top: '10px',
+            top: '30px',
             bottom: '30px',
+            left: '30px',
+            right: '30px',
         },
         printBackground: true,
         path: pdfPath,
@@ -50,10 +52,6 @@ const main = async () => {
     // create a new page
     const page = await browser.newPage();
 
-    await page.addStyleTag({
-        path: path.join(__dirname, 'templates', 'styles', 'style.css'),
-    });
-
     // set your html as the pages content
     // await page.setContent(html, {
     //     waitUntil: 'domcontentloaded',
@@ -61,6 +59,10 @@ const main = async () => {
 
     await page.goto(`data:text/html;charset=UTF-8,${html}`, {
         waitUntil: 'networkidle0',
+    });
+
+    await page.addStyleTag({
+        path: path.join(__dirname, 'templates', 'styles', 'style.css'),
     });
 
     // create a pdf buffer
