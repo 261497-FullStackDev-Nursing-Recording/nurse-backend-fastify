@@ -49,7 +49,7 @@ export async function createRecord(
         });
         return record as unknown as CreateRecordRes;
     } catch (err) {
-        return err;
+        throw new Error('Failed to create record');
     }
 }
 
@@ -58,11 +58,15 @@ export async function updateRecord(
     body: UpdateRecordReq,
     id: string,
 ) {
-    const records = await fastify.prisma.record.update({
-        where: {
-            id: id,
-        },
-        data: body,
-    });
-    return records as unknown as UpdateRecordRes;
+    try {
+        const record = await fastify.prisma.record.update({
+            where: {
+                id: id,
+            },
+            data: body,
+        });
+        return record as unknown as UpdateRecordRes;
+    } catch (err) {
+        throw new Error('Failed to update record');
+    }
 }

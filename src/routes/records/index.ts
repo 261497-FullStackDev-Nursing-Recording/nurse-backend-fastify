@@ -1,6 +1,7 @@
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
+import { handleError } from '../../utils/error';
 import { createRecord, getRecords, updateRecord } from './services';
 import { CreateRecordReq, GetRecordsReq, UpdateRecordReq } from './types';
 
@@ -25,8 +26,12 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             body: GetRecordsReq,
         },
         handler: async (request, reply) => {
-            const records = await getRecords(server, request.body);
-            return records;
+            try {
+                const records = await getRecords(server, request.body);
+                return records;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
         },
     });
     server.route({
@@ -36,8 +41,12 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             body: CreateRecordReq,
         },
         handler: async (request, reply) => {
-            const record = await createRecord(server, request.body);
-            return record.id;
+            try {
+                const record = await createRecord(server, request.body);
+                return record.id;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
         },
     });
     server.route({
@@ -54,8 +63,12 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         },
         handler: async (request, reply) => {
             const { record_id } = request.params as IRecord;
-            await updateRecord(server, request.body, record_id);
-            return null;
+            try {
+                await updateRecord(server, request.body, record_id);
+                return null;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
         },
     });
 };
