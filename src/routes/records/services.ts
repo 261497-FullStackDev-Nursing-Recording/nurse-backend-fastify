@@ -31,26 +31,26 @@ export async function getRecords(
               }
             : undefined,
     });
-    return records as unknown as GetRecordsRes; // I will see if there is a better way to do this. Right now if I don't do this typescript will keep complaining.
+    return records as unknown as GetRecordsRes;
 }
 
 export async function createRecord(
     fastify: FastifyInstance,
     body: CreateRecordReq,
 ) {
-    const { fields, ...rec } = body;
-    const record = await fastify.prisma.record.create({
-        data: {
-            rec,
-            fields: {
-                create: fields,
+    try {
+        const { fields, ...rec } = body;
+
+        const record = await fastify.prisma.record.create({
+            data: {
+                ...rec,
+                fields: { create: fields },
             },
-        },
-        include: {
-            fields: true,
-        },
-    });
-    return record as unknown as CreateRecordRes;
+        });
+        return record as unknown as CreateRecordRes;
+    } catch (err) {
+        return err;
+    }
 }
 
 export async function updateRecord(
@@ -64,5 +64,5 @@ export async function updateRecord(
         },
         data: body,
     });
-    return records as unknown as UpdateRecordRes; // I will see if there is a better way to do this. Right now if I don't do this typescript will keep complaining.
+    return records as unknown as UpdateRecordRes;
 }

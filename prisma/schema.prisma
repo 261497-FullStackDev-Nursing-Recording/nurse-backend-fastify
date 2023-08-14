@@ -32,11 +32,11 @@ model User {
   username        String          @unique
   password        String
   role            Role            @default(USER)
-  created_at      DateTime        @default(now())
   // updatedAt DateTime @updatedAt
   user_on_patient UserOnPatient[]
   records         Record[]
   fields          Field[]
+  created_at      DateTime        @default(now())
 }
 
 enum Status {
@@ -88,10 +88,10 @@ model Record {
   ward         String
   diseaseGroup String
   shift        Shift
+  visit_number String
+  fields       Field[] 
   created_at   DateTime @default(now())
   modified_at  DateTime @updatedAt
-  visit_number String
-  fields       Field[]
 }
 
 model Field {

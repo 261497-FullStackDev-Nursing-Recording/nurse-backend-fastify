@@ -13,6 +13,8 @@ export const Record = Type.Object({
     shift: Type.Enum(Shift),
     visit_number: Type.String(),
     fields: Type.Array(Field),
+    created_at: Type.String(),
+    modified_at: Type.String(),
 });
 
 export const GetRecordsReq = Type.Object({
@@ -33,7 +35,7 @@ export type GetRecordsReq = Static<typeof GetRecordsReq>;
 export type GetRecordsRes = Static<typeof Record>[];
 
 export const CreateRecordReq = Type.Object({
-    ...Type.Pick(Type.Partial(Record), [
+    ...Type.Pick(Type.Required(Record), [
         'user_id',
         'patient_id',
         'bed_number',
