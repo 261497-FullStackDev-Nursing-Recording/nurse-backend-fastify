@@ -29,7 +29,6 @@ export type UpdateFieldRes = null;
 export const CreateFieldsReq = Type.Array(
     Type.Object({
         ...Type.Pick(Type.Required(Field), [
-            'record_id',
             'user_id',
             'field_code',
             'field_value',

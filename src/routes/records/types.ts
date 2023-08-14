@@ -1,7 +1,7 @@
 import { Shift } from '@prisma/client';
 import { Static, Type } from '@sinclair/typebox';
 
-import { Field } from '../field/types';
+import { CreateFieldsReq } from '../field/types';
 
 export const Record = Type.Object({
     id: Type.String(),
@@ -12,7 +12,7 @@ export const Record = Type.Object({
     diseaseGroup: Type.String(),
     shift: Type.Enum(Shift),
     visit_number: Type.String(),
-    fields: Type.Array(Field),
+    fields: CreateFieldsReq,
     created_at: Type.String(),
     modified_at: Type.String(),
 });

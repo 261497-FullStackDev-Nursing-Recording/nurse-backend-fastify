@@ -39,11 +39,10 @@ export async function createRecord(
     body: CreateRecordReq,
 ) {
     try {
-        const { fields, ...rec } = body;
-
+        const { fields, ...data } = body;
         const record = await fastify.prisma.record.create({
             data: {
-                ...rec,
+                ...data,
                 fields: { create: fields },
             },
         });

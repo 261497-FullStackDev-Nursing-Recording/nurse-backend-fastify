@@ -5,7 +5,7 @@ import { handleError } from '../../utils/error';
 import { createRecord, getRecords, updateRecord } from './services';
 import { CreateRecordReq, GetRecordsReq, UpdateRecordReq } from './types';
 
-interface IRecord {
+interface IParamRecord {
     record_id: string;
 }
 const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
@@ -34,6 +34,7 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             }
         },
     });
+
     server.route({
         method: 'POST',
         url: '/',
@@ -62,7 +63,7 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             body: UpdateRecordReq,
         },
         handler: async (request, reply) => {
-            const { record_id } = request.params as IRecord;
+            const { record_id } = request.params as IParamRecord;
             try {
                 await updateRecord(server, request.body, record_id);
                 return null;
