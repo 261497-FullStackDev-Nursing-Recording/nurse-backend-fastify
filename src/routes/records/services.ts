@@ -1,15 +1,18 @@
 import { FastifyInstance } from 'fastify';
+import { isDate } from 'util/types';
 
 import {
+    type CreateRecordReq,
+    type CreateRecordRes,
+    type GetRecordsReq,
     type GetRecordsRes,
-    type SearchRecordReq,
     type UpdateRecordReq,
     type UpdateRecordRes,
 } from './types';
 
-export async function searchRecords(
+export async function getRecords(
     fastify: FastifyInstance,
-    body: SearchRecordReq,
+    body: GetRecordsReq,
 ) {
     const { fromDate, includeFields, ...restOptions } = body;
     // Handle data input
@@ -22,22 +25,32 @@ export async function searchRecords(
                 gte: fromDateObj,
             },
         },
-        // include: includeFields
-        //     ? {
-        //           a_field: true,
-        //           e_field: true,
-        //           i_field: true,
-        //           o_field: true,
-        //           s_field: true,
-        //       }
-        //     : undefined,
+        include: includeFields
+            ? {
+                  fields: true,
+              }
+            : undefined,
     });
     return records as unknown as GetRecordsRes; // I will see if there is a better way to do this. Right now if I don't do this typescript will keep complaining.
 }
 
-function isDate(dateStr: string | undefined) {
-    if (!dateStr) return false;
-    return !isNaN(new Date(dateStr).getDate());
+export async function createRecord(
+    fastify: FastifyInstance,
+    body: CreateRecordReq,
+) {
+    const { fields, ...rec } = body;
+    const record = await fastify.prisma.record.create({
+        data: {
+            rec,
+            fields: {
+                create: fields,
+            },
+        },
+        include: {
+            fields: true,
+        },
+    });
+    return record as unknown as CreateRecordRes;
 }
 
 export async function updateRecord(
@@ -49,9 +62,7 @@ export async function updateRecord(
         where: {
             id: id,
         },
-        data: {
-            ...body,
-        },
+        data: body,
     });
     return records as unknown as UpdateRecordRes; // I will see if there is a better way to do this. Right now if I don't do this typescript will keep complaining.
 }

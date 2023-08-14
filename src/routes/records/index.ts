@@ -1,8 +1,8 @@
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
-import { searchRecords, updateRecord } from './services';
-import { SearchRecordReq, UpdateRecordReq } from './types';
+import { createRecord, getRecords, updateRecord } from './services';
+import { CreateRecordReq, GetRecordsReq, UpdateRecordReq } from './types';
 
 interface IRecord {
     record_id: string;
@@ -22,11 +22,22 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'POST',
         url: '/search',
         schema: {
-            body: SearchRecordReq,
+            body: GetRecordsReq,
         },
         handler: async (request, reply) => {
-            const records = await searchRecords(server, request.body);
+            const records = await getRecords(server, request.body);
             return records;
+        },
+    });
+    server.route({
+        method: 'POST',
+        url: '/',
+        schema: {
+            body: CreateRecordReq,
+        },
+        handler: async (request, reply) => {
+            const record = await createRecord(server, request.body);
+            return record.id;
         },
     });
     server.route({
