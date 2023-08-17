@@ -44,7 +44,7 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         handler: async (request, reply) => {
             try {
                 const record = await createRecord(server, request.body);
-                return record.id;
+                return record;
             } catch (err: any) {
                 return handleError(reply, 500, err);
             }

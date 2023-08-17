@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { isDate } from 'util/types';
 
+import { isDate } from '../../utils/date';
 import {
     type CreateRecordReq,
     type CreateRecordRes,
@@ -14,15 +14,21 @@ export async function getRecords(
     fastify: FastifyInstance,
     body: GetRecordsReq,
 ) {
-    const { fromDate, includeFields, ...restOptions } = body;
+    const { fromDate, toDate, includeFields, ...restOptions } = body;
     // Handle data input
-    if (!isDate(fromDate || '1970-01-01')) throw new Error('Invalid fromDate');
+    if (!isDate(fromDate) || !isDate(toDate)) {
+        throw new Error('Invalid fromDate');
+    }
     const fromDateObj = new Date(fromDate || '1970-01-01');
+    const toDateObj = new Date(toDate || '');
+    console.log(fromDateObj);
+    console.log(toDateObj);
     const records = await fastify.prisma.record.findMany({
         where: {
             ...restOptions,
             created_at: {
                 gte: fromDateObj,
+                lte: toDateObj,
             },
         },
         include: includeFields
