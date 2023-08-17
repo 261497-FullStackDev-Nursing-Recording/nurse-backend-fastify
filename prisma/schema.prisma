@@ -58,9 +58,9 @@ model Patient {
 }
 
 model UserOnPatient {
-  user       User    @relation(fields: [user_id], references: [id])
+  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id    String
-  patient    Patient @relation(fields: [patient_id], references: [id])
+  patient    Patient @relation(fields: [patient_id], references: [id], onDelete: Cascade)
   patient_id String
 
   @@id([user_id, patient_id])
@@ -80,9 +80,9 @@ enum FieldCode {
 
 model Record {
   id           String   @id @default(uuid())
-  created_by   User     @relation(fields: [user_id], references: [id])
+  created_by   User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id      String
-  patient      Patient  @relation(fields: [patient_id], references: [id])
+  patient      Patient  @relation(fields: [patient_id], references: [id], onDelete: Cascade)
   patient_id   String
   bed_number   Int
   ward         String
@@ -96,9 +96,9 @@ model Record {
 
 model Field {
   id               String         @id @default(uuid())
-  record           Record         @relation(fields: [record_id], references: [id])
+  record           Record         @relation(fields: [record_id], references: [id], onDelete: Cascade)
   record_id        String
-  created_by       User           @relation(fields: [user_id], references: [id])
+  created_by       User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id          String
   field_code       FieldCode
   field_pre_label  String?
@@ -112,8 +112,8 @@ model Field {
 
 model FieldOnField {
   id        String @id @default(uuid())
-  parent    Field  @relation("ParentField", fields: [parent_id], references: [id])
+  parent    Field  @relation("ParentField", fields: [parent_id], references: [id], onDelete: Cascade)
   parent_id String
-  child     Field  @relation("ChildrenField", fields: [child_id], references: [id])
+  child     Field  @relation("ChildrenField", fields: [child_id], references: [id], onDelete: Cascade)
   child_id  String
 }

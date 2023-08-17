@@ -2,7 +2,12 @@ import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
 import { handleError } from '../../utils/error';
-import { createRecord, getRecords, updateRecord } from './services';
+import {
+    createRecord,
+    deleteRecord,
+    getRecords,
+    updateRecord,
+} from './services';
 import { CreateRecordReq, GetRecordsReq, UpdateRecordReq } from './types';
 
 interface IParamRecord {
@@ -66,6 +71,27 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             const { record_id } = request.params as IParamRecord;
             try {
                 await updateRecord(server, request.body, record_id);
+                return null;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
+        },
+    });
+    server.route({
+        method: 'DELETE',
+        url: '/:record_id',
+        schema: {
+            params: {
+                type: 'object',
+                properties: {
+                    record_id: { type: 'string' },
+                },
+            },
+        },
+        handler: async (request, reply) => {
+            const { record_id } = request.params as IParamRecord;
+            try {
+                await deleteRecord(server, record_id);
                 return null;
             } catch (err: any) {
                 return handleError(reply, 500, err);

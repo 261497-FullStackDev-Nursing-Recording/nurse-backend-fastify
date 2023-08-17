@@ -1,9 +1,9 @@
 import { Shift } from '@prisma/client';
 import { Static, Type } from '@sinclair/typebox';
 
-import { CreateFieldsReq } from '../field/types';
+import { CreateFieldsReq } from '../fields/types';
 
-export const Record = Type.Object({
+const Record = Type.Object({
     id: Type.String(),
     user_id: Type.String(),
     patient_id: Type.String(),
@@ -51,7 +51,6 @@ export type CreateRecordRes = Static<typeof Record>;
 
 export const UpdateRecordReq = Type.Object({
     ...Type.Pick(Type.Partial(Record), [
-        'user_id',
         'bed_number',
         'ward',
         'diseaseGroup',
@@ -60,4 +59,3 @@ export const UpdateRecordReq = Type.Object({
     ]).properties,
 });
 export type UpdateRecordReq = Static<typeof UpdateRecordReq>;
-export type UpdateRecordRes = null;

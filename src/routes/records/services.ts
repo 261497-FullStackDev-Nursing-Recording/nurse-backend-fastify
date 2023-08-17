@@ -7,7 +7,6 @@ import {
     type GetRecordsReq,
     type GetRecordsRes,
     type UpdateRecordReq,
-    type UpdateRecordRes,
 } from './types';
 
 export async function getRecords(
@@ -21,8 +20,6 @@ export async function getRecords(
     }
     const fromDateObj = new Date(fromDate || '1970-01-01');
     const toDateObj = new Date(toDate || '');
-    console.log(fromDateObj);
-    console.log(toDateObj);
     const records = await fastify.prisma.record.findMany({
         where: {
             ...restOptions,
@@ -64,14 +61,31 @@ export async function updateRecord(
     id: string,
 ) {
     try {
-        const record = await fastify.prisma.record.update({
+        await fastify.prisma.record.update({
             where: {
                 id: id,
             },
             data: body,
         });
-        return record as unknown as UpdateRecordRes;
+    } catch (error) {
+        throw new Error(`Failed to update record`);
+    }
+}
+
+export async function deleteRecord(fastify: FastifyInstance, id: string) {
+    try {
+        await fastify.prisma.field.deleteMany({
+            where: {
+                record_id: id,
+            },
+        });
+        await fastify.prisma.record.delete({
+            where: {
+                id: id,
+            },
+        });
+        return null;
     } catch (err) {
-        throw new Error('Failed to update record');
+        throw new Error('Failed to delete record');
     }
 }

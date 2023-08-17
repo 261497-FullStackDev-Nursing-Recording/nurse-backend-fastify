@@ -1,7 +1,7 @@
 import { FieldCode } from '@prisma/client';
 import { Static, Type } from '@sinclair/typebox';
 
-export const Field = Type.Object({
+const Field = Type.Object({
     id: Type.String(),
     record_id: Type.String(),
     user_id: Type.String(),
