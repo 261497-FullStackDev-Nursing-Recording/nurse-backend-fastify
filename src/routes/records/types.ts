@@ -1,10 +1,7 @@
 import { Shift } from '@prisma/client';
 import { Static, Type } from '@sinclair/typebox';
 
-const Field = Type.Object({
-    id: Type.String(),
-    message: Type.String(),
-});
+import { CreateFieldsReq } from '../fields/types';
 
 const Record = Type.Object({
     id: Type.String(),
@@ -12,31 +9,21 @@ const Record = Type.Object({
     patient_id: Type.String(),
     bed_number: Type.Integer(),
     ward: Type.String(),
-    diagnose: Type.String(),
+    diseaseGroup: Type.String(),
     shift: Type.Enum(Shift),
     visit_number: Type.String(),
+    fields: CreateFieldsReq,
     created_at: Type.String(),
     modified_at: Type.String(),
-    a_field: Type.Array(Field),
-    e_field: Type.Array(Field),
-    i_field: Type.Array(Field),
-    o_field: Type.Array(Field),
-    s_field: Type.Array(Field),
 });
 
-export const GetRecordsRes = Type.Array(Type.Partial(Record));
-export type GetRecordsRes = Static<typeof GetRecordsRes>;
-
-export const UpdateRecordRes = null;
-export type UpdateRecordRes = null;
-
-export const SearchRecordReq = Type.Object({
+export const GetRecordsReq = Type.Object({
     ...Type.Pick(Type.Partial(Record), [
-        'id',
+        'user_id',
         'patient_id',
         'bed_number',
         'ward',
-        'diagnose',
+        'diseaseGroup',
         'shift',
         'visit_number',
     ]).properties,
@@ -44,13 +31,29 @@ export const SearchRecordReq = Type.Object({
     toDate: Type.Optional(Type.String()),
     includeFields: Type.Optional(Type.Boolean()),
 });
-export type SearchRecordReq = Static<typeof SearchRecordReq>;
+export type GetRecordsReq = Static<typeof GetRecordsReq>;
+export type GetRecordsRes = Static<typeof Record>[];
+
+export const CreateRecordReq = Type.Object({
+    ...Type.Pick(Type.Required(Record), [
+        'user_id',
+        'patient_id',
+        'bed_number',
+        'ward',
+        'diseaseGroup',
+        'shift',
+        'visit_number',
+        'fields',
+    ]).properties,
+});
+export type CreateRecordReq = Static<typeof CreateRecordReq>;
+export type CreateRecordRes = Static<typeof Record>;
 
 export const UpdateRecordReq = Type.Object({
     ...Type.Pick(Type.Partial(Record), [
         'bed_number',
         'ward',
-        'diagnose',
+        'diseaseGroup',
         'shift',
         'visit_number',
     ]).properties,

@@ -32,11 +32,11 @@ model User {
   username        String          @unique
   password        String
   role            Role            @default(USER)
-  created_at      DateTime        @default(now())
   // updatedAt DateTime @updatedAt
   user_on_patient UserOnPatient[]
   records         Record[]
   fields          Field[]
+  created_at      DateTime        @default(now())
 }
 
 enum Status {
@@ -58,9 +58,9 @@ model Patient {
 }
 
 model UserOnPatient {
-  user       User    @relation(fields: [user_id], references: [id])
+  user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id    String
-  patient    Patient @relation(fields: [patient_id], references: [id])
+  patient    Patient @relation(fields: [patient_id], references: [id], onDelete: Cascade)
   patient_id String
 
   @@id([user_id, patient_id])
@@ -80,25 +80,25 @@ enum FieldCode {
 
 model Record {
   id           String   @id @default(uuid())
-  created_by   User     @relation(fields: [user_id], references: [id])
+  created_by   User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id      String
-  patient      Patient  @relation(fields: [patient_id], references: [id])
+  patient      Patient  @relation(fields: [patient_id], references: [id], onDelete: Cascade)
   patient_id   String
   bed_number   Int
   ward         String
   diseaseGroup String
   shift        Shift
+  visit_number String
+  fields       Field[] 
   created_at   DateTime @default(now())
   modified_at  DateTime @updatedAt
-  visit_number String
-  fields       Field[]
 }
 
 model Field {
   id               String         @id @default(uuid())
-  record           Record         @relation(fields: [record_id], references: [id])
+  record           Record         @relation(fields: [record_id], references: [id], onDelete: Cascade)
   record_id        String
-  created_by       User           @relation(fields: [user_id], references: [id])
+  created_by       User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id          String
   field_code       FieldCode
   field_pre_label  String?

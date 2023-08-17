@@ -1,10 +1,16 @@
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
-import { searchRecords, updateRecord } from './services';
-import { SearchRecordReq, UpdateRecordReq } from './types';
+import { handleError } from '../../utils/error';
+import {
+    createRecord,
+    deleteRecord,
+    getRecords,
+    updateRecord,
+} from './services';
+import { CreateRecordReq, GetRecordsReq, UpdateRecordReq } from './types';
 
-interface IRecord {
+interface IParamRecord {
     record_id: string;
 }
 const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
@@ -22,11 +28,31 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'POST',
         url: '/search',
         schema: {
-            body: SearchRecordReq,
+            body: GetRecordsReq,
         },
         handler: async (request, reply) => {
-            const records = await searchRecords(server, request.body);
-            return records;
+            try {
+                const records = await getRecords(server, request.body);
+                return records;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
+        },
+    });
+
+    server.route({
+        method: 'POST',
+        url: '/',
+        schema: {
+            body: CreateRecordReq,
+        },
+        handler: async (request, reply) => {
+            try {
+                const record = await createRecord(server, request.body);
+                return record;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
         },
     });
     server.route({
@@ -42,9 +68,34 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             body: UpdateRecordReq,
         },
         handler: async (request, reply) => {
-            const { record_id } = request.params as IRecord;
-            await updateRecord(server, request.body, record_id);
-            return null;
+            const { record_id } = request.params as IParamRecord;
+            try {
+                await updateRecord(server, request.body, record_id);
+                return null;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
+        },
+    });
+    server.route({
+        method: 'DELETE',
+        url: '/:record_id',
+        schema: {
+            params: {
+                type: 'object',
+                properties: {
+                    record_id: { type: 'string' },
+                },
+            },
+        },
+        handler: async (request, reply) => {
+            const { record_id } = request.params as IParamRecord;
+            try {
+                await deleteRecord(server, record_id);
+                return null;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
         },
     });
 };
