@@ -1,12 +1,10 @@
-version: '3.8' # optional since v1.27.0
-name: nurse-backend
+version: '3.8'
 services:
-    db:
-        container_name: nurse_db
+    postgres:
+        container_name: postgres
         image: postgres:15.3-alpine
-        restart: always
         ports:
-            - ${DATABASE_PORT}:5432
+            - '${DATABASE_PORT}:5432'
         volumes:
             - nurse_vol:/var/lib/postgresql/data
         environment:
@@ -15,9 +13,43 @@ services:
             - POSTGRES_DB=${POSTGRES_DB}
         networks:
             - nurse_net
+        restart: always
+
+    pg-admin:
+        image: dpage/pgadmin4:6
+        container_name: pgadmin
+        depends_on:
+            - postgres
+        environment:
+            - PGADMIN_DEFAULT_EMAIL=admin@email.com
+            - PGADMIN_DEFAULT_PASSWORD=admin
+            - PGADMIN_LISTEN_PORT=5050
+        ports:
+            - '5050:5050'
+        networks:
+            - nurse_net
+        restart: unless-stopped
+
+    prisma-postgres-api:
+        stdin_open: true
+        container_name: prisma-postgres-api
+        depends_on:
+            - postgres
+        build:
+            context: . # Path to your application code
+            dockerfile: Dockerfile # Path to your Dockerfile for the Yarn development environment
+        volumes:
+            - .:/app # Mount your application code into the container
+        ports:
+            - '5001:5001' # Expose the port your Yarn dev server uses
+        networks:
+            - nurse_net
+        restart: always
+
 volumes:
     nurse_vol:
         external: false
+
 networks:
     nurse_net:
         driver: bridge
