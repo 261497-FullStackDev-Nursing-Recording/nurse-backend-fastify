@@ -20,9 +20,6 @@
         "tailwind:css": "postcss pdf/templates/styles/tailwind.css -o pdf/templates/styles/style.css",
         "pdf:gen": "ts-node pdf/pdf-gen.ts"
     },
-    "prisma": {
-        "seed": "ts-node prisma/seed.ts"
-    },
     "keywords": [],
     "author": "",
     "license": "ISC",
