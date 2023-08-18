@@ -20,7 +20,6 @@ export const GetPatientsReq = Type.Object({
         'indentification_id',
     ]).properties,
     fromDate: Type.Optional(Type.String()),
-    toDate: Type.Optional(Type.String()),
 });
 export type GetPatientsReq = Static<typeof GetPatientsReq>;
 export type GetPatientsRes = Static<typeof Patient>[]; //for type script definition

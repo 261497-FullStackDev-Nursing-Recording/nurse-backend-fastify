@@ -7,13 +7,13 @@ import { GetPatientsReq } from './types';
 
 const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     const server = fastify.withTypeProvider<TypeBoxTypeProvider>();
-    fastify.addHook('onRequest', async (req, res) => {
-        try {
-            await req.jwtVerify();
-        } catch (err) {
-            res.send(err);
-        }
-    });
+    // fastify.addHook('onRequest', async (req, res) => {
+    //     try {
+    //         await req.jwtVerify();
+    //     } catch (err) {
+    //         res.send(err);
+    //     }
+    // });
 
     server.route({
         method: 'POST',
