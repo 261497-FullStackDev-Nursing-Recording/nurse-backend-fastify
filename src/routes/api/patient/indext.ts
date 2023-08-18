@@ -1,9 +1,8 @@
-// import { Type } from '@sinclair/typebox';
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
+import { handleError } from '../../../utils/error';
 import { searchPatient } from './services';
-// import { RouteHandlerMethod } from 'fastify';
 import { SearchPatientsReq } from './types';
 
 const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
@@ -20,15 +19,16 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'POST',
         url: '/search',
         schema: {
+            description: 'Search a patient',
+            tags: ['patients'],
             body: SearchPatientsReq,
         },
-        handler: async (req, rep) => {
+        handler: async (request, reply) => {
             try {
-                const body: any = req.body;
-                const patients = searchPatient(server, body);
+                const patients = searchPatient(server, request.body);
                 return patients;
-            } catch (err) {
-                rep.code(500).send(err);
+            } catch (err: any) {
+                return handleError(reply, 500, err);
             }
         },
     });
@@ -37,6 +37,8 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'POST',
         url: '/linkPatients',
         schema: {
+            tags: ['patients'],
+            description: 'Link a patient',
             body: {
                 type: 'object',
                 properties: {
@@ -45,9 +47,9 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                 },
             },
         },
-        handler: async (req, rep) => {
+        handler: async (request, reply) => {
             try {
-                const body: any = req.body;
+                const body: any = request.body;
                 const linkPatients = fastify.prisma.userOnPatient.create({
                     data: {
                         user_id: body.user_id,
@@ -55,8 +57,8 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                     },
                 });
                 return linkPatients;
-            } catch (err) {
-                rep.code(500).send(err);
+            } catch (err: any) {
+                return handleError(reply, 500, err);
             }
         },
     });
@@ -65,6 +67,8 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'POST',
         url: '/GetLinkedPatients',
         schema: {
+            tags: ['patients'],
+            description: 'Get linked patient',
             body: {
                 type: 'object',
                 properties: {
@@ -72,17 +76,17 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                 },
             },
         },
-        handler: async (req, rep) => {
+        handler: async (request, reply) => {
             try {
-                const body: any = req.body;
+                const body: any = request.body;
                 const GetPatients = fastify.prisma.userOnPatient.findMany({
                     where: {
                         user_id: body.user_id,
                     },
                 });
                 return GetPatients;
-            } catch (err) {
-                rep.code(500).send(err);
+            } catch (err: any) {
+                return handleError(reply, 500, err);
             }
         },
     });

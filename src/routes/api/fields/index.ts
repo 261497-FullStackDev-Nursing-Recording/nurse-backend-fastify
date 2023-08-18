@@ -1,7 +1,7 @@
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
-import { handleError } from '../../utils/error';
+import { handleError } from '../../../utils/error';
 import { updateField } from './service';
 import { UpdateFieldReq } from './types';
 
@@ -24,6 +24,8 @@ const fields: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         url: '/:field_id',
         schema: {
             body: UpdateFieldReq,
+            description: 'Update field',
+            tags: ['fields'],
             params: {
                 type: 'object',
                 properties: {

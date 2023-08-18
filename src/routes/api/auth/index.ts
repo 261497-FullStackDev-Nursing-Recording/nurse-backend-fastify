@@ -12,6 +12,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'GET',
         url: '/me',
         schema: {
+            tags: ['auth'],
             response: {
                 200: UserRes,
             },
@@ -26,6 +27,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'POST',
         url: '/signin',
         schema: {
+            tags: ['auth'],
             body: SignInReq,
             response: {
                 200: UserRes,
@@ -56,6 +58,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'GET',
         preHandler: fastify.auth([fastify.verifyJWT]),
         url: '/test/user',
+        schema: {},
         handler: async (request, reply) => {
             reply.send({ message: 'You can access protected route.' });
         },
@@ -65,6 +68,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'GET',
         preHandler: fastify.auth([fastify.verifyAdmin]),
         url: '/test/admin',
+        schema: { tags: ['auth'] },
         handler: async (request, reply) => {
             reply.send({ message: 'You can access admin route.' });
         },
@@ -73,7 +77,7 @@ const auth: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     server.route({
         method: 'GET',
         url: '/logout',
-        schema: {},
+        schema: { tags: ['auth'] },
         handler: async (request, reply) => {
             reply
                 .clearCookie('access_token')

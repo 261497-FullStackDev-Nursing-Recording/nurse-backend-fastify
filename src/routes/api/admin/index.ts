@@ -1,6 +1,6 @@
 import { FastifyPluginAsync } from 'fastify';
 
-import { sseRouteHandler } from '../../plugins/sse/utils';
+import { sseRouteHandler } from '../../../plugins/sse/utils';
 
 const root: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     fastify.route({

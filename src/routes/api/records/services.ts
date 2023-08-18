@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 
-import { isDate } from '../../utils/date';
+import { isDate } from '../../../utils/date';
 import {
     type CreateRecordReq,
     type CreateRecordRes,
@@ -14,7 +14,6 @@ export async function getRecords(
     body: GetRecordsReq,
 ) {
     const { fromDate, toDate, includeFields, ...restOptions } = body;
-    // Handle data input
     if (!isDate(fromDate) || !isDate(toDate)) {
         throw new Error('Invalid fromDate');
     }

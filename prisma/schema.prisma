@@ -32,7 +32,6 @@ model User {
   username        String          @unique
   password        String
   role            Role            @default(USER)
-  // updatedAt DateTime @updatedAt
   user_on_patient UserOnPatient[]
   records         Record[]
   fields          Field[]
@@ -55,6 +54,7 @@ model Patient {
   status            Status
   user_on_patient   UserOnPatient[]
   records           Record[]
+  created_at   DateTime @default(now())
 }
 
 model UserOnPatient {
