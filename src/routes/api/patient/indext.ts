@@ -2,8 +2,8 @@ import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
 import { handleError } from '../../../utils/error';
-import { searchPatient } from './services';
-import { SearchPatientsReq } from './types';
+import { getPatients } from './services';
+import { GetPatientsReq } from './types';
 
 const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     const server = fastify.withTypeProvider<TypeBoxTypeProvider>();
@@ -19,13 +19,13 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'POST',
         url: '/search',
         schema: {
-            description: 'Search a patient',
             tags: ['patients'],
-            body: SearchPatientsReq,
+            description: 'Get patients',
+            body: GetPatientsReq,
         },
         handler: async (request, reply) => {
             try {
-                const patients = searchPatient(server, request.body);
+                const patients = getPatients(server, request.body);
                 return patients;
             } catch (err: any) {
                 return handleError(reply, 500, err);
@@ -79,12 +79,12 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         handler: async (request, reply) => {
             try {
                 const body: any = request.body;
-                const GetPatients = fastify.prisma.userOnPatient.findMany({
+                const patients = fastify.prisma.userOnPatient.findMany({
                     where: {
                         user_id: body.user_id,
                     },
                 });
-                return GetPatients;
+                return patients;
             } catch (err: any) {
                 return handleError(reply, 500, err);
             }

@@ -29,7 +29,7 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         url: '/search',
         schema: {
             tags: ['records'],
-            description: 'Get Record',
+            description: 'Get Records',
             body: GetRecordsReq,
         },
         handler: async (request, reply) => {

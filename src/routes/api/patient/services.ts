@@ -1,11 +1,11 @@
 import { FastifyInstance } from 'fastify';
 
 import { isDate } from '../../../utils/date';
-import { type GetPatients, type SearchPatientsReq } from './types';
+import { type GetPatientsReq, type GetPatientsRes } from './types';
 
-export async function searchPatient(
+export async function getPatients(
     fastify: FastifyInstance,
-    body: SearchPatientsReq,
+    body: GetPatientsReq,
 ) {
     const { fromDate, toDate, ...resOptions } = body;
     if (!isDate(fromDate) || !isDate(toDate)) {
@@ -23,5 +23,5 @@ export async function searchPatient(
         },
     });
 
-    return patients as unknown as GetPatients;
+    return patients as unknown as GetPatientsRes;
 }
