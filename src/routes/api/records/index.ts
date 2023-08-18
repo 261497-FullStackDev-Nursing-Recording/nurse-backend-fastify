@@ -1,7 +1,7 @@
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
-import { handleError } from '../../utils/error';
+import { handleError } from '../../../utils/error';
 import {
     createRecord,
     deleteRecord,
@@ -28,6 +28,8 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'POST',
         url: '/search',
         schema: {
+            tags: ['records'],
+            description: 'Get Records',
             body: GetRecordsReq,
         },
         handler: async (request, reply) => {
@@ -45,6 +47,8 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         url: '/',
         schema: {
             body: CreateRecordReq,
+            description: 'Create Record with Fields',
+            tags: ['records'],
         },
         handler: async (request, reply) => {
             try {
@@ -59,6 +63,8 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'PUT',
         url: '/:record_id',
         schema: {
+            description: 'Update Record',
+            tags: ['records'],
             params: {
                 type: 'object',
                 properties: {
@@ -81,6 +87,8 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'DELETE',
         url: '/:record_id',
         schema: {
+            description: 'Delete Record',
+            tags: ['records'],
             params: {
                 type: 'object',
                 properties: {

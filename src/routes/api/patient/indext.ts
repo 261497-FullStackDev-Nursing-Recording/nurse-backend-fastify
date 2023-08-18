@@ -1,34 +1,34 @@
-// import { Type } from '@sinclair/typebox';
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
-import { searchPatient } from './services';
-// import { RouteHandlerMethod } from 'fastify';
-import { SearchPatientsReq } from './types';
+import { handleError } from '../../../utils/error';
+import { getPatients } from './services';
+import { GetPatientsReq } from './types';
 
 const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     const server = fastify.withTypeProvider<TypeBoxTypeProvider>();
-    fastify.addHook('onRequest', async (req, res) => {
-        try {
-            await req.jwtVerify();
-        } catch (err) {
-            res.send(err);
-        }
-    });
+    // fastify.addHook('onRequest', async (req, res) => {
+    //     try {
+    //         await req.jwtVerify();
+    //     } catch (err) {
+    //         res.send(err);
+    //     }
+    // });
 
     server.route({
         method: 'POST',
         url: '/search',
         schema: {
-            body: SearchPatientsReq,
+            tags: ['patients'],
+            description: 'Get patients',
+            body: GetPatientsReq,
         },
-        handler: async (req, rep) => {
+        handler: async (request, reply) => {
             try {
-                const body: any = req.body;
-                const patients = searchPatient(server, body);
+                const patients = getPatients(server, request.body);
                 return patients;
-            } catch (err) {
-                rep.code(500).send(err);
+            } catch (err: any) {
+                return handleError(reply, 500, err);
             }
         },
     });
@@ -37,6 +37,8 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'POST',
         url: '/linkPatients',
         schema: {
+            tags: ['patients'],
+            description: 'Link a patient',
             body: {
                 type: 'object',
                 properties: {
@@ -45,9 +47,9 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                 },
             },
         },
-        handler: async (req, rep) => {
+        handler: async (request, reply) => {
             try {
-                const body: any = req.body;
+                const body: any = request.body;
                 const linkPatients = fastify.prisma.userOnPatient.create({
                     data: {
                         user_id: body.user_id,
@@ -55,8 +57,8 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                     },
                 });
                 return linkPatients;
-            } catch (err) {
-                rep.code(500).send(err);
+            } catch (err: any) {
+                return handleError(reply, 500, err);
             }
         },
     });
@@ -65,6 +67,8 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         method: 'POST',
         url: '/GetLinkedPatients',
         schema: {
+            tags: ['patients'],
+            description: 'Get linked patient',
             body: {
                 type: 'object',
                 properties: {
@@ -72,17 +76,17 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                 },
             },
         },
-        handler: async (req, rep) => {
+        handler: async (request, reply) => {
             try {
-                const body: any = req.body;
-                const GetPatients = fastify.prisma.userOnPatient.findMany({
+                const body: any = request.body;
+                const patients = fastify.prisma.userOnPatient.findMany({
                     where: {
                         user_id: body.user_id,
                     },
                 });
-                return GetPatients;
-            } catch (err) {
-                rep.code(500).send(err);
+                return patients;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
             }
         },
     });

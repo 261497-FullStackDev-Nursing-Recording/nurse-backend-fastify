@@ -8,13 +8,11 @@ const Patient = Type.Object({
     l_name: Type.String(),
     hn: Type.String(),
     status: Type.Enum(Status),
+    created_at: Type.String(),
 });
 
-export const GetPatientsRes = Type.Array(Type.Partial(Patient)); //for api schema
-export type GetPatients = Static<typeof GetPatientsRes>; //for type script definition
-
 //search for patient
-export const SearchPatientsReq = Type.Object({
+export const GetPatientsReq = Type.Object({
     ...Type.Pick(Type.Partial(Patient), [
         'f_name',
         'l_name',
@@ -22,6 +20,6 @@ export const SearchPatientsReq = Type.Object({
         'indentification_id',
     ]).properties,
     fromDate: Type.Optional(Type.String()),
-    toDate: Type.Optional(Type.String()),
 });
-export type SearchPatientsReq = Static<typeof SearchPatientsReq>;
+export type GetPatientsReq = Static<typeof GetPatientsReq>;
+export type GetPatientsRes = Static<typeof Patient>[]; //for type script definition

@@ -28,7 +28,6 @@ export const GetRecordsReq = Type.Object({
         'visit_number',
     ]).properties,
     fromDate: Type.Optional(Type.String()),
-    toDate: Type.Optional(Type.String()),
     includeFields: Type.Optional(Type.Boolean()),
 });
 export type GetRecordsReq = Static<typeof GetRecordsReq>;
