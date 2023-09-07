@@ -15,8 +15,18 @@ export const optionsSwagger: SwaggerOptions = {
 export const optionsSwaggerUI: FastifySwaggerUiOptions = {
     routePrefix: '/documentation',
     uiConfig: {
-        docExpansion: 'full',
+        filter: true,
+        docExpansion: 'list',
         deepLinking: false,
+        syntaxHighlight: {
+            activate: true,
+            theme: 'monokai',
+        },
+        tagsSorter: (tag1, tag2) => {
+            if (tag1 === 'default') return 1;
+            if (tag2 === 'default') return -1;
+            return tag1.localeCompare(tag2);
+        },
     },
     uiHooks: {
         onRequest: function (request, reply, next) {
