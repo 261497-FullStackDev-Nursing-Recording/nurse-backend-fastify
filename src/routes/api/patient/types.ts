@@ -22,4 +22,10 @@ export const GetPatientsReq = Type.Object({
     fromDate: Type.Optional(Type.String()),
 });
 export type GetPatientsReq = Static<typeof GetPatientsReq>;
-export type GetPatientsRes = Static<typeof Patient>[]; //for type script definition
+export type GetPatientsRes = Static<typeof Patient>[];
+
+//update linked patient
+export const UpdateLinkedReq = Type.Object({
+    id: Type.Array(Type.String()),
+});
+export type UpdateLinkedReq = Static<typeof UpdateLinkedReq>;

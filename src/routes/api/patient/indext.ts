@@ -2,8 +2,12 @@ import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
 import { handleError } from '../../../utils/error';
-import { getPatients } from './services';
-import { GetPatientsReq } from './types';
+import { getPatients, updateLinkedPatient } from './services';
+import { GetPatientsReq, UpdateLinkedReq } from './types';
+
+interface IParamPatient {
+    user_id: string;
+}
 
 const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     const server = fastify.withTypeProvider<TypeBoxTypeProvider>();
@@ -85,6 +89,31 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                     },
                 });
                 return patients;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
+        },
+    });
+    server.route({
+        method: 'PUT',
+        url: '/updateLikedPatient',
+        schema: {
+            tags: ['patients'],
+            description: 'Update linked patient',
+            params: {
+                type: 'object',
+                properties: {
+                    user_id: { type: 'string' },
+                },
+            },
+            body: UpdateLinkedReq,
+        },
+        handler: async (request, reply) => {
+            try {
+                const { user_id } = request.params as IParamPatient;
+                const body: any = request.body;
+                await updateLinkedPatient(server, user_id, body);
+                return null;
             } catch (err: any) {
                 return handleError(reply, 500, err);
             }
