@@ -2,8 +2,18 @@ import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
 import { handleError } from '../../../utils/error';
-import { getPatients, updateLinkedPatient } from './services';
-import { GetPatientsReq, UpdateLinkedReq } from './types';
+import {
+    getPatients,
+    getPatientsByIds,
+    searchForPatients,
+    updateLinkedPatient,
+} from './services';
+import {
+    GetPatientsByIdsReq,
+    GetPatientsReq,
+    SearchPatientReq,
+    UpdateLinkedReq,
+} from './types';
 
 interface IParamPatient {
     user_id: string;
@@ -24,12 +34,47 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         url: '/search',
         schema: {
             tags: ['patients'],
+            description: 'Search For patients',
+            body: SearchPatientReq,
+        },
+        handler: async (request, reply) => {
+            try {
+                const patients = searchForPatients(server, request.body);
+                return patients;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
+        },
+    });
+    server.route({
+        method: 'POST',
+        url: '/getAllPatient',
+        schema: {
+            tags: ['patients'],
             description: 'Get patients',
             body: GetPatientsReq,
         },
         handler: async (request, reply) => {
             try {
                 const patients = getPatients(server, request.body);
+                return patients;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
+        },
+    });
+
+    server.route({
+        method: 'POST',
+        url: '/getPatientsByIds',
+        schema: {
+            tags: ['patients'],
+            description: 'Get patients by patientIds',
+            body: GetPatientsByIdsReq,
+        },
+        handler: async (request, reply) => {
+            try {
+                const patients = getPatientsByIds(server, request.body);
                 return patients;
             } catch (err: any) {
                 return handleError(reply, 500, err);
@@ -69,7 +114,7 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
     server.route({
         method: 'POST',
-        url: '/GetLinkedPatients',
+        url: '/getLinkedPatients',
         schema: {
             tags: ['patients'],
             description: 'Get linked patient',

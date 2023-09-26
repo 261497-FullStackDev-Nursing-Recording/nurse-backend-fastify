@@ -11,7 +11,7 @@ const Patient = Type.Object({
     created_at: Type.String(),
 });
 
-//search for patient
+//get all patient
 export const GetPatientsReq = Type.Object({
     ...Type.Pick(Type.Partial(Patient), [
         'f_name',
@@ -24,8 +24,23 @@ export const GetPatientsReq = Type.Object({
 export type GetPatientsReq = Static<typeof GetPatientsReq>;
 export type GetPatientsRes = Static<typeof Patient>[];
 
+//search for patient
+export const SearchPatientReq = Type.Object({
+    name: Type.String(),
+    identification_id: Type.String(),
+});
+export type SearchPatientReq = Static<typeof SearchPatientReq>;
+export type SearchPatientRes = Static<typeof Patient>[];
+
+//get  patients by ids
+export const GetPatientsByIdsReq = Type.Object({
+    ids: Type.Array(Type.String()),
+});
+export type GetPatientsByIdsReq = Static<typeof GetPatientsByIdsReq>;
+export type GetPatientsByIdsRes = Static<typeof Patient>[];
+
 //update linked patient
 export const UpdateLinkedReq = Type.Object({
-    id: Type.Array(Type.String()),
+    ids: Type.Array(Type.String()),
 });
 export type UpdateLinkedReq = Static<typeof UpdateLinkedReq>;

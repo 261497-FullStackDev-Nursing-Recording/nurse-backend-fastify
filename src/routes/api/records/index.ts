@@ -26,7 +26,7 @@ const records: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
 
     server.route({
         method: 'POST',
-        url: '/search',
+        url: '/getAllRecord',
         schema: {
             tags: ['records'],
             description: 'Get Records',
