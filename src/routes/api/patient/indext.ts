@@ -113,12 +113,12 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     });
 
     server.route({
-        method: 'POST',
-        url: '/getLinkedPatients',
+        method: 'GET',
+        url: '/getLinkedPatients/:user_id',
         schema: {
             tags: ['patients'],
             description: 'Get linked patient',
-            body: {
+            params: {
                 type: 'object',
                 properties: {
                     user_id: { type: 'string' },
@@ -126,11 +126,11 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
             },
         },
         handler: async (request, reply) => {
+            const { user_id } = request.params as IParamPatient;
             try {
-                const body: any = request.body;
                 const patients = fastify.prisma.userOnPatient.findMany({
                     where: {
-                        user_id: body.user_id,
+                        user_id: user_id,
                     },
                 });
                 return patients;
