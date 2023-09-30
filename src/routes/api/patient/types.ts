@@ -11,7 +11,7 @@ const Patient = Type.Object({
     identification_id: Type.String(),
     an: Type.String(),
     hn: Type.String(),
-    current_bed_number: Type.String(),
+    current_bed_number: Type.Integer(),
     isQuit: Type.Boolean(),
     status: Type.Enum(Status),
     created_at: Type.Date(),
@@ -37,9 +37,9 @@ export const GetPatientsReq = Type.Object({
 
 //search for patient
 export const SearchPatientReq = Type.Object({
-    an: Type.String(),
-    bed_number: Type.String(),
-    name: Type.String(),
+    an: Type.Optional(Type.String()),
+    bed_number: Type.Optional(Type.Integer()),
+    name: Type.Optional(Type.String()),
 });
 
 //get  patients by ids
