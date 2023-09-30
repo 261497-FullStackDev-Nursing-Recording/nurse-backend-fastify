@@ -43,6 +43,12 @@ async function main() {
             f_name: faker.person.firstName(),
             l_name: faker.person.lastName(),
             hn: faker.string.numeric(7),
+            an: faker.string.numeric(7),
+            age: faker.number.int({ min: 10, max: 80 }),
+            birthday: faker.date.birthdate({ min: 10, max: 80, mode: 'age' }),
+            phone_number: '0' + faker.string.numeric(9),
+            current_bed_number: faker.number.int(100).toString(),
+            isQuit: faker.datatype.boolean(),
             status: getRandomStatus(),
         };
     });
@@ -87,11 +93,11 @@ async function main() {
     const recordsData = [...Array(settings.numRecords).keys()].map((idx) => ({
         user_id: getRandomElement<User>(nurses).id,
         patient_id: getRandomElement<Patient>(patients).id,
-        bed_number: faker.number.int(100),
+        bed_number: faker.number.int(100).toString(),
         ward: 'Ward',
         shift: getRandomShift(),
         visit_number: faker.string.numeric(8),
-        diseaseGroup: 'DISEASE_GROUP_1',
+        disease_group: 'DISEASE_GROUP_1',
     }));
 
     await prisma.record.createMany({

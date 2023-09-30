@@ -49,14 +49,19 @@ model Patient {
   id                String          @id @default(uuid())
   f_name            String
   l_name            String
-  hn                String
+  age               Int
+  birthday          DateTime
+  phone_number      String
   identification_id String
+  an                String
+  hn                String
+  current_bed_number String
   status            Status
+  isQuit            Boolean
   user_on_patient   UserOnPatient[]
   records           Record[]
-  created_at   DateTime @default(now())
+  created_at        DateTime @default(now())
 }
-
 model UserOnPatient {
   user       User    @relation(fields: [user_id], references: [id], onDelete: Cascade)
   user_id    String
@@ -84,9 +89,9 @@ model Record {
   user_id      String
   patient      Patient  @relation(fields: [patient_id], references: [id], onDelete: Cascade)
   patient_id   String
-  bed_number   Int
+  bed_number   String
   ward         String
-  diseaseGroup String
+  disease_group String
   shift        Shift
   visit_number String
   fields       Field[] 
