@@ -23,6 +23,7 @@ export async function getPatients(
     const patients = await fastify.prisma.patient.findMany({
         where: {
             ...resOptions,
+            isQuit: false,
             created_at: {
                 gte: fromDateObj,
             },
@@ -42,6 +43,7 @@ export async function getPatientsByIds(
             id: {
                 in: patientIds,
             },
+            isQuit: false,
         },
     });
 
@@ -52,23 +54,29 @@ export async function searchForPatients(
     fastify: FastifyInstance,
     body: SearchPatientReq,
 ) {
-    const identification_id = body.identification_id;
-    const name = body.name.trim().split(' ');
-    const f_name = name[0] || '';
-    const l_name = name[1] || '';
+    const { name, an, bed_number } = body;
+    const nameSplit = name.trim().split(' ');
+    const f_name = nameSplit[0];
+    const l_name = nameSplit[1];
     const patients = await fastify.prisma.patient.findMany({
         where: {
-            identification_id: {
-                contains: identification_id,
+            an: {
+                contains: an || '',
+                mode: 'insensitive',
+            },
+            current_bed_number: {
+                contains: bed_number || '',
+                mode: 'insensitive',
             },
             f_name: {
-                contains: f_name,
+                contains: f_name || '',
                 mode: 'insensitive',
             },
             l_name: {
-                contains: l_name,
+                contains: l_name || '',
                 mode: 'insensitive',
             },
+            isQuit: false,
         },
     });
 

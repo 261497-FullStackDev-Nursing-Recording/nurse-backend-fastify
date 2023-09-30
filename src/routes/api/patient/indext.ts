@@ -51,7 +51,7 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         url: '/getAllPatient',
         schema: {
             tags: ['patients'],
-            description: 'Get patients',
+            description: 'Get all patient',
             body: GetPatientsReq,
         },
         handler: async (request, reply) => {
@@ -128,9 +128,12 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         handler: async (request, reply) => {
             const { user_id } = request.params as IParamPatient;
             try {
-                const patients = fastify.prisma.userOnPatient.findMany({
+                const patients = await fastify.prisma.userOnPatient.findMany({
                     where: {
                         user_id: user_id,
+                        patient: {
+                            isQuit: false,
+                        },
                     },
                 });
                 return patients;
