@@ -55,7 +55,7 @@ model Patient {
   identification_id String
   an                String
   hn                String
-  current_bed_number String
+  current_bed_number Int
   status            Status
   isQuit            Boolean
   user_on_patient   UserOnPatient[]
@@ -89,7 +89,7 @@ model Record {
   user_id      String
   patient      Patient  @relation(fields: [patient_id], references: [id], onDelete: Cascade)
   patient_id   String
-  bed_number   String
+  bed_number   Int
   ward         String
   disease_group String
   shift        Shift

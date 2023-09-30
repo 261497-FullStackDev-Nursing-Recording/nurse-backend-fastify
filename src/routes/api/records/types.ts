@@ -7,7 +7,7 @@ const Record = Type.Object({
     id: Type.String(),
     user_id: Type.String(),
     patient_id: Type.String(),
-    bed_number: Type.String(),
+    bed_number: Type.Integer(),
     ward: Type.String(),
     disease_group: Type.String(),
     shift: Type.Enum(Shift),
