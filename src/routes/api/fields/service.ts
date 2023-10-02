@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 
-import { UpdateFieldReq } from './types';
+import { CreateFieldsReq, UpdateFieldReq } from './types';
 
 export async function updateField(
     fastify: FastifyInstance,
@@ -16,6 +16,19 @@ export async function updateField(
         });
         return field;
     } catch (err) {
-        return err;
+        throw err;
+    }
+}
+export async function createFields(
+    fastify: FastifyInstance,
+    body: CreateFieldsReq,
+) {
+    try {
+        const field = await fastify.prisma.field.createMany({
+            data: body,
+        });
+        return field;
+    } catch (err) {
+        throw err;
     }
 }
