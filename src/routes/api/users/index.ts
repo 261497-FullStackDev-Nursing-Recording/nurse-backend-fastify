@@ -1,6 +1,7 @@
 import { TypeBoxTypeProvider } from '@fastify/type-provider-typebox';
 import { FastifyPluginAsync } from 'fastify';
 
+import { handleError } from '../../../utils/error';
 import { searchUsers } from './services';
 import { SearchUserReq, UsersRes } from './types';
 
@@ -25,8 +26,12 @@ const users: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         },
         // preHandler: fastify.auth([fastify.verifyAdmin]),
         handler: async function (request, reply) {
-            const users = await searchUsers(server, {});
-            return users;
+            try {
+                const users = await searchUsers(server, {});
+                return users;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
         },
     });
 
@@ -41,8 +46,12 @@ const users: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         },
         // preHandler: fastify.auth([fastify.verifyAdmin]),
         handler: async function (request, reply) {
-            const users = await searchUsers(server, request.body);
-            return users;
+            try {
+                const users = await searchUsers(server, request.body);
+                return users;
+            } catch (err: any) {
+                return handleError(reply, 500, err);
+            }
         },
     });
 };

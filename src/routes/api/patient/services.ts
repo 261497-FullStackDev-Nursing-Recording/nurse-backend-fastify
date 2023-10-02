@@ -20,17 +20,20 @@ export async function getPatients(
         throw new Error('Invalid fromDate');
     }
     const fromDateObj = new Date(fromDate || '1970-01-01');
-    const patients = await fastify.prisma.patient.findMany({
-        where: {
-            ...resOptions,
-            isQuit: false,
-            created_at: {
-                gte: fromDateObj,
+    try {
+        const patients = await fastify.prisma.patient.findMany({
+            where: {
+                ...resOptions,
+                isQuit: false,
+                created_at: {
+                    gte: fromDateObj,
+                },
             },
-        },
-    });
-
-    return patients as unknown as GetPatientsRes;
+        });
+        return patients as unknown as GetPatientsRes;
+    } catch (err) {
+        throw err;
+    }
 }
 
 export async function getPatientsByIds(
@@ -38,16 +41,19 @@ export async function getPatientsByIds(
     body: GetPatientsByIdsReq,
 ) {
     const { ids: patientIds } = body;
-    const patients = await fastify.prisma.patient.findMany({
-        where: {
-            id: {
-                in: patientIds,
+    try {
+        const patients = await fastify.prisma.patient.findMany({
+            where: {
+                id: {
+                    in: patientIds,
+                },
+                isQuit: false,
             },
-            isQuit: false,
-        },
-    });
-
-    return patients as unknown as GetPatientsByIdsRes;
+        });
+        return patients as unknown as GetPatientsByIdsRes;
+    } catch (err) {
+        throw err;
+    }
 }
 
 export async function searchForPatients(
@@ -58,26 +64,30 @@ export async function searchForPatients(
     const nameSplit = name?.trim().split(' ') || [];
     const f_name = nameSplit[0];
     const l_name = nameSplit[1];
-    const patients = await fastify.prisma.patient.findMany({
-        where: {
-            an: {
-                contains: an,
-                mode: 'insensitive',
+    try {
+        const patients = await fastify.prisma.patient.findMany({
+            where: {
+                an: {
+                    contains: an,
+                    mode: 'insensitive',
+                },
+                current_bed_number: bed_number,
+                f_name: {
+                    contains: f_name,
+                    mode: 'insensitive',
+                },
+                l_name: {
+                    contains: l_name,
+                    mode: 'insensitive',
+                },
+                isQuit: false,
             },
-            current_bed_number: bed_number,
-            f_name: {
-                contains: f_name,
-                mode: 'insensitive',
-            },
-            l_name: {
-                contains: l_name,
-                mode: 'insensitive',
-            },
-            isQuit: false,
-        },
-    });
+        });
 
-    return patients as unknown as SearchPatientRes;
+        return patients as unknown as SearchPatientRes;
+    } catch (err) {
+        throw err;
+    }
 }
 
 export async function updateLinkedPatient(
@@ -86,13 +96,16 @@ export async function updateLinkedPatient(
     body: UpdateLinkedReq,
 ) {
     const { ids: patientIds } = body;
-
-    await fastify.prisma.userOnPatient.deleteMany({
-        where: {
-            user_id: user_id,
-            patient_id: {
-                in: patientIds,
+    try {
+        await fastify.prisma.userOnPatient.deleteMany({
+            where: {
+                user_id: user_id,
+                patient_id: {
+                    in: patientIds,
+                },
             },
-        },
-    });
+        });
+    } catch (err) {
+        throw err;
+    }
 }

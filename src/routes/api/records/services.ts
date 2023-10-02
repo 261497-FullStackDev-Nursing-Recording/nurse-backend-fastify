@@ -19,20 +19,24 @@ export async function getRecords(
         throw new Error('Invalid fromDate');
     }
     const fromDateObj = new Date(fromDate || '1970-01-01');
-    const records = await fastify.prisma.record.findMany({
-        where: {
-            ...restOptions,
-            created_at: {
-                gte: fromDateObj,
+    try {
+        const records = await fastify.prisma.record.findMany({
+            where: {
+                ...restOptions,
+                created_at: {
+                    gte: fromDateObj,
+                },
             },
-        },
-        include: includeFields
-            ? {
-                  fields: true,
-              }
-            : undefined,
-    });
-    return records as unknown as GetRecordsRes;
+            include: includeFields
+                ? {
+                      fields: true,
+                  }
+                : undefined,
+        });
+        return records as unknown as GetRecordsRes;
+    } catch (err) {
+        throw err;
+    }
 }
 
 export async function createRecord(
@@ -40,16 +44,12 @@ export async function createRecord(
     body: CreateRecordReq,
 ) {
     try {
-        const { fields, ...data } = body;
         const record = await fastify.prisma.record.create({
-            data: {
-                ...data,
-                fields: { create: fields },
-            },
+            data: body,
         });
         return record as unknown as CreateRecordRes;
     } catch (err) {
-        throw new Error('Failed to create record');
+        throw err;
     }
 }
 
@@ -65,8 +65,8 @@ export async function updateRecord(
             },
             data: body,
         });
-    } catch (error) {
-        throw new Error(`Failed to update record`);
+    } catch (err) {
+        throw err;
     }
 }
 
@@ -84,6 +84,6 @@ export async function deleteRecord(fastify: FastifyInstance, id: string) {
         });
         return null;
     } catch (err) {
-        throw new Error('Failed to delete record');
+        throw err;
     }
 }

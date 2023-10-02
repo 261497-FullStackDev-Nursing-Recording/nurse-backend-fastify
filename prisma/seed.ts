@@ -18,8 +18,8 @@ const settings = {
     numPatients: 100,
     numUserOnPatients: 500,
     numRecords: 100,
-    numFieldsPerRecords: 50,
-    numFieldsOnFieldsPerRecord: 200,
+    numFieldsPerRecords: 10,
+    numFieldsOnFieldsPerRecord: 10,
 };
 
 const prisma = new PrismaClient();

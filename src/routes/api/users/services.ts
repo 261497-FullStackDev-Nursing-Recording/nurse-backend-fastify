@@ -14,6 +14,6 @@ export async function searchUsers(
         });
         return users as unknown as UsersRes;
     } catch (err) {
-        throw fastify.httpErrors.internalServerError(JSON.stringify(err));
+        throw err;
     }
 }

@@ -42,7 +42,6 @@ export const CreateRecordReq = Type.Object({
         'disease_group',
         'shift',
         'visit_number',
-        'fields',
     ]).properties,
 });
 export type CreateRecordReq = Static<typeof CreateRecordReq>;
