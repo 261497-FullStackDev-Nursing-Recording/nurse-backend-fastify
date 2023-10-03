@@ -129,7 +129,7 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     });
     server.route({
         method: 'PUT',
-        url: '/updateLikedPatient',
+        url: '/updateLikedPatient/:user_id',
         schema: {
             tags: ['patients'],
             description: 'Update linked patient',
