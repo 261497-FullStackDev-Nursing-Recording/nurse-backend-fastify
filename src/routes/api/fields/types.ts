@@ -4,11 +4,10 @@ import { Static, Type } from '@sinclair/typebox';
 const Field = Type.Object({
     id: Type.String(),
     record_id: Type.String(),
-    user_id: Type.String(),
-    field_code: Type.Enum(FieldCode),
+    field_type: Type.Enum(FieldCode),
     field_pre_label: Type.String(),
-    field_value: Type.String(),
-    field_post_label: Type.String(),
+    field_data: Type.String(),
+    field_date: Type.String(),
     created_at: Type.Date(),
     modified_at: Type.Date(),
 });
@@ -16,10 +15,10 @@ const Field = Type.Object({
 // Update Field API
 export const UpdateFieldReq = Type.Object({
     ...Type.Pick(Type.Partial(Field), [
-        'field_code',
+        'field_type',
         'field_pre_label',
-        'field_value',
-        'field_post_label',
+        'field_data',
+        'field_date',
     ]).properties,
 });
 
@@ -28,14 +27,11 @@ export const CreateFieldsReq = Type.Array(
     Type.Object({
         ...Type.Pick(Type.Required(Field), [
             'record_id',
-            'user_id',
-            'field_code',
-            'field_value',
+            'field_type',
+            'field_data',
         ]).properties,
-        ...Type.Pick(Type.Partial(Field), [
-            'field_pre_label',
-            'field_post_label',
-        ]).properties,
+        ...Type.Pick(Type.Partial(Field), ['field_pre_label', 'field_date'])
+            .properties,
     }),
 );
 

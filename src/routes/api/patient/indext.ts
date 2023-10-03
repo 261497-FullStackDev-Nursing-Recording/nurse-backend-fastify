@@ -8,12 +8,7 @@ import {
     searchForPatients,
     updateLinkedPatient,
 } from './services';
-import {
-    GetPatientsByIdsReq,
-    GetPatientsReq,
-    SearchPatientReq,
-    UpdateLinkedReq,
-} from './types';
+import { GetPatientsReq, SearchPatientReq, UpdateLinkedReq } from './types';
 
 interface IParamPatient {
     user_id: string;
@@ -57,24 +52,6 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         handler: async (request, reply) => {
             try {
                 const patients = getPatients(server, request.body);
-                return patients;
-            } catch (err: any) {
-                return handleError(reply, 500, err);
-            }
-        },
-    });
-
-    server.route({
-        method: 'POST',
-        url: '/getPatientsByIds',
-        schema: {
-            tags: ['patients'],
-            description: 'Get patients by patientIds',
-            body: GetPatientsByIdsReq,
-        },
-        handler: async (request, reply) => {
-            try {
-                const patients = getPatientsByIds(server, request.body);
                 return patients;
             } catch (err: any) {
                 return handleError(reply, 500, err);
@@ -128,14 +105,22 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         handler: async (request, reply) => {
             const { user_id } = request.params as IParamPatient;
             try {
-                const patients = await fastify.prisma.userOnPatient.findMany({
-                    where: {
-                        user_id: user_id,
-                        patient: {
-                            isQuit: false,
+                const linkedPatients =
+                    await fastify.prisma.userOnPatient.findMany({
+                        where: {
+                            user_id: user_id,
+                            patient: {
+                                isQuit: false,
+                            },
                         },
-                    },
-                });
+                        select: {
+                            patient_id: true,
+                        },
+                    });
+                const userIds = linkedPatients.map(
+                    (patient) => patient.patient_id,
+                );
+                const patients = getPatientsByIds(server, userIds);
                 return patients;
             } catch (err: any) {
                 return handleError(reply, 500, err);

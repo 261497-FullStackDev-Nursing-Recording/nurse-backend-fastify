@@ -43,14 +43,10 @@ export const SearchPatientReq = Type.Object({
 });
 
 //get  patients by ids
-export const GetPatientsByIdsReq = Type.Object({
-    ids: Type.Array(Type.String()),
-});
+export const GetPatientsByIdsReq = Type.Array(Type.String());
 
 //update linked patient
-export const UpdateLinkedReq = Type.Object({
-    ids: Type.Array(Type.String()),
-});
+export const UpdateLinkedReq = Type.Array(Type.String());
 
 export type GetPatientsReq = Static<typeof GetPatientsReq>;
 export type GetPatientsRes = Static<typeof Patient>[];

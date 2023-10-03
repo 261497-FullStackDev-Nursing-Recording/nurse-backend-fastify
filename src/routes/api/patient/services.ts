@@ -40,12 +40,16 @@ export async function getPatientsByIds(
     fastify: FastifyInstance,
     body: GetPatientsByIdsReq,
 ) {
-    const { ids: patientIds } = body;
+  
+export async function getPatientsByIds(
+    fastify: FastifyInstance,
+    body: GetPatientsByIdsReq,
+) {
     try {
         const patients = await fastify.prisma.patient.findMany({
             where: {
                 id: {
-                    in: patientIds,
+                    in: body,
                 },
                 isQuit: false,
             },
@@ -95,13 +99,12 @@ export async function updateLinkedPatient(
     user_id: string,
     body: UpdateLinkedReq,
 ) {
-    const { ids: patientIds } = body;
     try {
         await fastify.prisma.userOnPatient.deleteMany({
             where: {
                 user_id: user_id,
                 patient_id: {
-                    in: patientIds,
+                    in: body,
                 },
             },
         });
@@ -109,3 +112,4 @@ export async function updateLinkedPatient(
         throw err;
     }
 }
+
