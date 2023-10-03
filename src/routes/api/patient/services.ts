@@ -40,6 +40,11 @@ export async function getPatientsByIds(
     fastify: FastifyInstance,
     body: GetPatientsByIdsReq,
 ) {
+  
+export async function getPatientsByIds(
+    fastify: FastifyInstance,
+    body: GetPatientsByIdsReq,
+) {
     try {
         const patients = await fastify.prisma.patient.findMany({
             where: {
@@ -107,3 +112,4 @@ export async function updateLinkedPatient(
         throw err;
     }
 }
+
