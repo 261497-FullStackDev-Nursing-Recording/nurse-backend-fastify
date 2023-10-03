@@ -111,11 +111,14 @@ async function main() {
             (idx) => {
                 return {
                     record_id: record.id,
-                    user_id: getRandomElement<User>(nurses).id,
-                    field_code: getRandomFieldCode(),
+                    field_type: getRandomFieldCode(),
                     field_pre_label: faker.lorem.sentence(),
-                    field_value: faker.lorem.paragraph(),
-                    field_post_label: faker.lorem.sentence(),
+                    field_data: faker.lorem.paragraph(),
+                    field_date: faker.date.birthdate({
+                        min: 2,
+                        max: 10,
+                        mode: 'age',
+                    }),
                 };
             },
         );

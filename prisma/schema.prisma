@@ -34,7 +34,6 @@ model User {
   role            Role            @default(USER)
   user_on_patient UserOnPatient[]
   records         Record[]
-  fields          Field[]
   created_at      DateTime        @default(now())
 }
 
@@ -89,11 +88,11 @@ model Record {
   user_id      String
   patient      Patient  @relation(fields: [patient_id], references: [id], onDelete: Cascade)
   patient_id   String
-  bed_number   Int
-  ward         String
-  disease_group String
-  shift        Shift
-  visit_number String
+  bed_number   Int?
+  ward         String?
+  disease_group String?
+  shift        Shift?
+  visit_number String?
   fields       Field[] 
   created_at   DateTime @default(now())
   modified_at  DateTime @updatedAt
@@ -103,12 +102,10 @@ model Field {
   id               String         @id @default(uuid())
   record           Record         @relation(fields: [record_id], references: [id], onDelete: Cascade)
   record_id        String
-  created_by       User           @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  user_id          String
-  field_code       FieldCode
+  field_type       FieldCode
   field_pre_label  String?
-  field_value      String
-  field_post_label String?
+  field_data       String
+  field_date       DateTime?
   parents          FieldOnField[] @relation("ParentField")
   children         FieldOnField[] @relation("ChildrenField")
   created_at       DateTime       @default(now())

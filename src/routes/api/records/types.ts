@@ -1,8 +1,6 @@
 import { Shift } from '@prisma/client';
 import { Static, Type } from '@sinclair/typebox';
 
-import { CreateFieldsReq } from '../fields/types';
-
 const Record = Type.Object({
     id: Type.String(),
     user_id: Type.String(),
@@ -12,7 +10,6 @@ const Record = Type.Object({
     disease_group: Type.String(),
     shift: Type.Enum(Shift),
     visit_number: Type.String(),
-    fields: CreateFieldsReq,
     created_at: Type.Date(),
     modified_at: Type.Date(),
 });
@@ -30,13 +27,10 @@ export const GetRecordsReq = Type.Object({
     fromDate: Type.Optional(Type.String()),
     includeFields: Type.Optional(Type.Boolean()),
 });
-export type GetRecordsReq = Static<typeof GetRecordsReq>;
-export type GetRecordsRes = Static<typeof Record>[];
 
 export const CreateRecordReq = Type.Object({
-    ...Type.Pick(Type.Required(Record), [
-        'user_id',
-        'patient_id',
+    ...Type.Pick(Type.Required(Record), ['user_id', 'patient_id']).properties,
+    ...Type.Pick(Type.Partial(Record), [
         'bed_number',
         'ward',
         'disease_group',
@@ -44,8 +38,6 @@ export const CreateRecordReq = Type.Object({
         'visit_number',
     ]).properties,
 });
-export type CreateRecordReq = Static<typeof CreateRecordReq>;
-export type CreateRecordRes = Static<typeof Record>;
 
 export const UpdateRecordReq = Type.Object({
     ...Type.Pick(Type.Partial(Record), [
@@ -56,4 +48,9 @@ export const UpdateRecordReq = Type.Object({
         'visit_number',
     ]).properties,
 });
+
+export type GetRecordsReq = Static<typeof GetRecordsReq>;
+export type GetRecordsRes = Static<typeof Record>[];
+export type CreateRecordReq = Static<typeof CreateRecordReq>;
+export type CreateRecordRes = Static<typeof Record>;
 export type UpdateRecordReq = Static<typeof UpdateRecordReq>;
