@@ -13,6 +13,7 @@ Make sure you have node version 18
 -   `docker-compose up -d`
 -   `npx prisma generate`
 -   `npx prisma db push`
+-   `npx prisma studio`
 
 ## Start
 
