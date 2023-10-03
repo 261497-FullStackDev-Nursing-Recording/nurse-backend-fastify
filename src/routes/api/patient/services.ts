@@ -48,6 +48,9 @@ export async function getPatientsByIds(
                 },
                 isQuit: false,
             },
+            orderBy: {
+                created_at: 'desc',
+            },
         });
         return patients as unknown as GetPatientsByIdsRes;
     } catch (err) {

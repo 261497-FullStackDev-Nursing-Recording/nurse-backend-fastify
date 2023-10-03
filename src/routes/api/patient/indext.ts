@@ -117,10 +117,10 @@ const patients: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
                             patient_id: true,
                         },
                     });
-                const userIds = linkedPatients.map(
+                const patientIds = linkedPatients.map(
                     (patient) => patient.patient_id,
                 );
-                const patients = getPatientsByIds(server, userIds);
+                const patients = await getPatientsByIds(server, patientIds);
                 return patients;
             } catch (err: any) {
                 return handleError(reply, 500, err);

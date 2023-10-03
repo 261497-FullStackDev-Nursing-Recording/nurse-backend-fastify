@@ -13,7 +13,6 @@ const main = async () => {
         'utf8',
     );
     const template = handlebars.compile(templateHtml);
-    console.log(JSON.stringify(datas));
     const html = template({ datas });
     fs.writeFileSync(path.join(__dirname, 'templates', 'output.html'), html);
 

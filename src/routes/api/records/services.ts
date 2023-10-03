@@ -32,6 +32,9 @@ export async function getRecords(
                       fields: true,
                   }
                 : undefined,
+            orderBy: {
+                created_at: 'desc',
+            },
         });
         return records as unknown as GetRecordsRes;
     } catch (err) {

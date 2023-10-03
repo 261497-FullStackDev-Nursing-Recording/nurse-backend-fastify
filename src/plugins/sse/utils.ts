@@ -36,7 +36,6 @@ export function sseRouteHandler(request: FastifyRequest, reply: FastifyReply) {
         type: 'init-connection',
     };
     reply.raw.write(serializeSSEEvent({ data: JSON.stringify(initData) }));
-    console.log(`${processId} ${JSON.stringify(initData)}`);
 
     const newSub: sseSubsType = {
         processId,
@@ -47,7 +46,6 @@ export function sseRouteHandler(request: FastifyRequest, reply: FastifyReply) {
     request.server.sseSubs.push(newSub);
 
     request.socket.on('close', () => {
-        console.log(`${processId} connection closed`);
         request.server.sseSubs = request.server.sseSubs.filter(
             (s) => s.processId !== processId,
         );
