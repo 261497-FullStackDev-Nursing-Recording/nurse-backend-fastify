@@ -79,6 +79,7 @@ enum FieldCode {
   IPREVENT_TEXT
   IPROMOTE_TEXT
   IPHYCHO_TEXT
+  I_TEXT
   E_TEXT
 }
 
