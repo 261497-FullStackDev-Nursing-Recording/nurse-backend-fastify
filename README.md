@@ -1,3 +1,10 @@
+# Technology Stack
+
+    Framework -> Fastify
+    Language -> Typescript
+    Database -> Prisma , Postgresql
+    Docker
+
 # Getting started
 
 Make sure you have node version 18
@@ -14,6 +21,10 @@ Make sure you have node version 18
 -   `npx prisma generate`
 -   `npx prisma db push`
 -   `npx prisma studio`
+
+## mockdata
+
+-   `yarn seed`
 
 ## Start
 
